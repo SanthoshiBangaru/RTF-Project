@@ -1,0 +1,280 @@
+/* style.css */
+body {
+    font-family: 'Roboto', sans-serif;
+    margin: 0;
+    background: linear-gradient(to bottom, #000, #221f1f);
+    color: #eee;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+body.light-theme {
+    background: linear-gradient(to bottom, #eee, #ddd);
+    color: #111;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 100;
+    background-color: rgba(0, 0, 0, 0.8);
+}
+
+.logo {
+    font-size: 2em;
+    font-weight: bold;
+    color: #e50914;
+    text-decoration: none;
+}
+
+.nav-links {
+    display: flex;
+}
+
+.nav-links a {
+    color: #fff;
+    text-decoration: none;
+    margin: 0 15px;
+    display: flex;
+    align-items: center;
+    transition: color 0.3s;
+}
+
+.nav-links a:hover {
+    color: #e50914;
+}
+
+.nav-links a i {
+    margin-right: 5px;
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+}
+
+#theme-toggle, #profile-button, #auth-button {
+    background-color: #e50914;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-left: 10px;
+}
+
+#theme-toggle:hover, #profile-button:hover, #auth-button:hover {
+    background-color: #b8060b;
+}
+
+.main-content {
+    flex-grow: 1;
+    padding-top: 80px;
+    padding-bottom: 20px;
+}
+
+.genre-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin: 20px 0;
+}
+
+.genre-btn {
+    background-color: #333;
+    color: #fff;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 5px;
+    margin: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.genre-btn.selected {
+    background-color: #e50914;
+}
+
+.genre-btn:hover {
+    background-color: #555;
+}
+
+.movie-row {
+    margin-bottom: 40px;
+}
+
+.movie-row .section-title {
+    display: flex;
+    align-items: center;
+    font-size: 1.5em;
+    margin-bottom: 10px;
+}
+
+.movie-row .section-title i {
+    margin-right: 10px;
+    font-size: 1.2em;
+    color: #e50914;
+}
+
+.movie-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    overflow-x: auto;
+    padding-bottom: 20px;
+    scroll-behavior: smooth;
+}
+
+.movie-item {
+    margin: 10px;
+    flex-shrink: 0;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.3s;
+}
+
+.movie-item img {
+    width: 200px; /* Increased width */
+    height: 300px; /* Increased height, maintaining aspect ratio */
+    object-fit: cover;
+    border-radius: 5px;
+    display: block;
+    cursor: pointer;
+    transition: opacity 0.3s;
+}
+
+.movie-item:hover img {
+    opacity: 0.7;
+    transform: scale(1.1);
+}
+
+.movie-item .overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    transition: opacity 0.3s;
+    border-radius: 5px;
+}
+
+.movie-item:hover .overlay {
+    opacity: 1;
+}
+
+.movie-item .overlay .movie-title {
+    font-size: 1.2em;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.movie-item .overlay .movie-details {
+    font-size: 0.9em;
+}
+
+.auth-page {
+    font-family: 'Roboto', sans-serif;
+    margin: 0;
+    background: linear-gradient(to bottom, #000, #221f1f);
+    color: #eee;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.auth-container {
+    background-color: rgba(0, 0, 0, 0.8);
+    padding: 20px;
+    border-radius: 8px;
+    width: 300px;
+    text-align: center;
+}
+
+.auth-tabs {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.tab-button {
+    background-color: #333;
+    color: #fff;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 4px 4px 0 0;
+    cursor: pointer;
+    margin: 0 5px;
+    transition: background-color 0.3s;
+}
+
+.tab-button.active {
+    background-color: #e50914;
+}
+
+.tab-button:hover {
+    background-color: #555;
+}
+
+.auth-form {
+    display: none;
+}
+
+.auth-form.active {
+    display: block;
+}
+
+.auth-form h2 {
+    margin-bottom: 20px;
+    color: #e50914;
+}
+
+.input-group {
+    margin-bottom: 15px;
+    text-align: left;
+}
+
+.input-group label {
+    display: block;
+    margin-bottom: 5px;
+    color: #fff;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #777;
+    border-radius: 4px;
+    background-color: #333;
+    color: #fff;
+    box-sizing: border-box;
+}
+
+.auth-form button {
+    background-color: #e50914;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    width: 100%;
+    transition: background-color 0.3s;
+}
+
+.auth-form button:hover {
+    background-color: #b8060b;
+}
