@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movie Recommender - All Movies</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* Additional styles for the all movies page */
+        .all-movies-container {
+            padding: 20px;
+        }
+        
+        .movies-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+            padding: 20px 0;
+        }
+        
+        .filter-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            flex-grow: 1;
+        }
+        
+        .filter-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .filter-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        
+        .filter-btn {
+            padding: 8px 12px;
+            border-radius: 20px;
+            border: 1px solid #ddd;
+            background: #f5f5f5;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+        
+        .filter-btn.active {
+            background: #4CAF50;
+            color: white;
+            border-color: #4CAF50;
+        }
+        
+        .filter-btn.language {
+            background: #f5f5f5;
+        }
+        
+        .filter-btn.language.active {
+            background: #2196F3;
+            color: white;
+            border-color: #2196F3;
+        }
+        
+        #search-input {
+            padding: 10px 15px;
+            border-radius: 20px;
+            border: 1px solid #ddd;
+            width: 100%;
+            font-size: 16px;
+        }
+        
+        .results-count {
+            color: #666;
+            font-style: italic;
+            margin-top: 10px;
+        }
+        
+        .reset-filters {
+            padding: 8px 15px;
+            background: #f44336;
+            color: white;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <a href="index.html" class="logo">Movie Recommender</a>
+        <nav class="nav-links">
+            <a href="index.html"><i class="fas fa-home"></i>Home</a>
+            <a href="movies.html" class="active"><i class="fas fa-film"></i>Movies</a>
+            <a href="mylist.html"><i class="fas fa-heart"></i>Wishlist</a>
+            <a href="Login.html"><i class="fas fa-sign-in-alt"></i>Login</a>
+        </nav>
+        <div class="header-right">
+            <button id="theme-toggle"><i class="fas fa-moon"></i> Dark Mode</button>
+            <button id="profile-button"><i class="fas fa-user-circle"></i> Profile</button>
+        </div>
+    </header>
+
+    <main class="main-content all-movies-container">
+        <h1><i class="fas fa-film"></i> All Movies</h1>
+        
+        <div class="filter-section">
+            <div class="filter-group">
+                <div class="filter-title">Search Movies</div>
+                <input type="text" id="search-input" placeholder="Search by title, actor or director...">
+            </div>
+            
+            <div class="filter-group">
+                <div class="filter-title">Languages</div>
+                <div class="filter-buttons" id="language-filters">
+                    <button class="filter-btn language active" data-language="all">All</button>
+                    <button class="filter-btn language" data-language="telugu">Telugu</button>
+                    <button class="filter-btn language" data-language="tamil">Tamil</button>
+                    <button class="filter-btn language" data-language="hindi">Hindi</button>
+                    <button class="filter-btn language" data-language="english">English</button>
+                    <button class="filter-btn language" data-language="malayalam">Malayalam</button>
+                    <button class="filter-btn language" data-language="kannada">Kannada</button>
+                </div>
+            </div>
+            
+            <div class="filter-group">
+                <div class="filter-title">Genres</div>
+                <div class="filter-buttons" id="genre-filters">
+                    <button class="filter-btn active" data-genre="all">All</button>
+                    <button class="filter-btn" data-genre="action">Action</button>
+                    <button class="filter-btn" data-genre="drama">Drama</button>
+                    <button class="filter-btn" data-genre="comedy">Comedy</button>
+                    <button class="filter-btn" data-genre="romance">Romance</button>
+                    <button class="filter-btn" data-genre="thriller">Thriller</button>
+                    <button class="filter-btn" data-genre="sci-fi">Sci-Fi</button>
+                    <button class="filter-btn" data-genre="fantasy">Fantasy</button>
+                    <button class="filter-btn" data-genre="historical">Historical</button>
+                    <button class="filter-btn" data-genre="adventure">Adventure</button>
+                    <button class="filter-btn" data-genre="crime">Crime</button>
+                    <button class="filter-btn" data-genre="horror">Horror</button>
+                </div>
+            </div>
+            
+            <button class="reset-filters" id="reset-filters">Reset Filters</button>
+        </div>
+        
+        <div class="results-count" id="results-count">Loading movies...</div>
+        
+        <div class="movies-grid" id="movies-grid"></div>
+    </main>
+
+    <footer>
+        &copy; 2025 Movie Recommendation System
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const movies = [
+                // Telugu Movies
+                {
+                    id: 1,
+                    title: 'Devara: Part 1',
+                    imageUrl: 'https://m.media-amazon.com/images/M/MV5BODg0NjQ5OGUtNGU2Zi00MGIyLTllM2ItMmU5Y2E1ODAwMDBlXkEyXkFqcGdeQXVyMTUzNTgzNzM0._V1_.jpg',
+                    overview: 'A fearless commander defends his village from powerful enemies while uncovering secrets from his past.',
+                    rating: '8.5',
+                    genre: 'Action, Drama, Historical',
+                    language: 'telugu',
+                    releaseDate: '2024-10-10',
+                    cast: ['NTR Jr', 'Janhvi Kapoor', 'Saif Ali Khan'],
+                    director: 'Koratala Siva',
+                    streaming: [
+                        { platform: 'Amazon Prime', subscription: true },
+                        { platform: 'Netflix', subscription: true }
+                    ],
+                    trailer: 'https://www.youtube.com/embed/YO6qu1dCmuM'
+                },
+                {
+                    id: 2,
+                    title: 'Baahubali: The Beginning',
+                    imageUrl: 'https://m.media-amazon.com/images/M/MV5BYWVlMjVhZWYtNWViNC00ODFkLTk1MmItYjU1MDY5ZDdhMTU3XkEyXkFqcGdeQXVyODIwMDI1NjM@._V1_.jpg',
+                    overview: 'In the kingdom of Mahishmati, Shivudu falls in love with a young warrior woman while learning that he is the heir to the throne.',
+                    rating: '8.0',
+                    genre: 'Action, Drama, Adventure',
+                    language: 'telugu',
+                    releaseDate: '2015-07-10',
+                    cast: ['Prabhas', 'Rana Daggubati', 'Anushka Shetty'],
+                    director: 'S.S. Rajamouli',
+                    streaming: [
+                        { platform: 'Amazon Prime', subscription: true },
+                        { platform: 'Netflix', subscription: true }
+                    ],
+                    trailer: 'https://www.youtube.com/embed/sOEg_YZQsTI'
+                },
+                {
+                    id: 3,
+                    title: 'Baahubali 2: The Conclusion',
+                    imageUrl: 'https://m.media-amazon.com/images/M/MV5BOGNlNmRkMjctNDgxMC00NzFhLWIzY2YtZDk3ZDE0NWZhZDBlXkEyXkFqcGdeQXVyODIwMDI1NjM@._V1_.jpg',
+                    overview: 'When Shiva learns that he is the heir to the throne of Mahishmati, he must fight his uncle to reclaim it.',
+                    rating: '8.2',
+                    genre: 'Action, Drama, Adventure',
+                    language: 'telugu',
+                    releaseDate: '2017-04-28',
+                    cast: ['Prabhas', 'Rana Daggubati', 'Anushka Shetty'],
+                    director: 'S.S. Rajamouli',
+                    streaming: [
+                        { platform: 'Amazon Prime', subscription: true },
+                        { platform: 'Netflix', subscription: true }
+                    ],
+                    trailer: 'https://www.youtube.com/embed/G62HrubdD6o'
+                },
+                {
+                    id: 4,
+                    title: 'RRR',
+                    imageUrl: 'https://upload.wikimedia.org/wikipedia/en/d/d7/RRR_Poster.jpg',
+                    overview: 'A fictional history of two legendary revolutionaries and their journey away from home before they started fighting for their country.',
+                    rating: '7.9',
+                    genre: 'Action, Drama, Historical',
+                    language: 'telugu',
+                    releaseDate: '2022-03-25',
+                    cast: ['NTR Jr', 'Ram Charan', 'Alia Bhatt'],
+                    director: 'S.S. Rajamouli',
+                    streaming: [
+                        { platform: 'Netflix', subscription: true },
+                        { platform: 'Zee5', subscription: true }
+                    ],
+                    trailer: 'https://www.youtube.com/embed/f_vbAtFSEc0'
+                },
+                {
+                    id: 5,
+                    title: 'Pushpa: The Rise',
+                    imageUrl: 'https://m.media-amazon.com/images/M/MV5BMTY4ODQ2NjQtYmNhNS00ZGI4LTliYjgtYjQ0ZjJjNWRhNmU4XkEyXkFqcGdeQXVyMTUzNTgzNzM0._V1_.jpg',
+                    overview: 'A laborer rises through the ranks of a red sandalwood smuggling syndicate, making enemies along the way.',
+                    rating: '7.6',
+                    genre: 'Action, Crime, Drama',
+                    language: 'telugu',
+                    releaseDate: '2021-12-17',
+                    cast: ['Allu Arjun', 'Fahadh Faasil', 'Rashmika Mandanna'],
+                    director: 'Sukumar',
+                    streaming: [
+                        { platform: 'Amazon Prime', subscription: true }
+                    ],
+                    trailer: 'https://www.youtube.com/embed/Q1NKMPhP8PY'
+                },
+                {
+                    id: 6,
+                    title: 'Ala Vaikunthapurramuloo',
+                    imageUrl: 'https://m.media-amazon.com/images/M/MV5BNDU3MWFhYjQtZTQ5YS00YzVkLThlYTItZWIyZjAwMWQ0ZmY0XkEyXkFqcGdeQXVyNTgxODY5ODI@._V1_.jpg',
+                    overview: 'A man raised in a wealthy family discovers he was switched at birth with another man from a poor family.',
+                    rating: '7.5',
+                    genre: 'Action, Comedy, Drama',
+                    language: 'telugu',
+                    releaseDate: '2020-01-12',
+                    cast: ['Allu Arjun', 'Pooja Hegde', 'Tabu'],
+                    director: 'Trivikram Srinivas',
+                    streaming: [
+                        { platform: 'Amazon Prime', subscription: true }
+                    ],
+                    trailer: 'https://www.youtube.com/embed/te5xE9m14DI'
+                },
+                {
+                    id: 7,
+                    title: 'Sarkaru Vaari Paata',
+                    imageUrl: 'https://m.media-amazon.com/images/M/MV5BZDM3YjA0OWYtYjQ0Yi00YjVjLWE5YjMtYzQ1YzVkYzY4ZGVkXkEyXkFqcGdeQXVyMTQ3Mzk2MDg4._V1_.jpg',
+                    overview: 'A financial genius takes on corrupt politicians and bankers who exploit common people.',
+                    rating: '6.5',
+                    genre: 'Action, Drama',
+                    language: 'telugu',
+                    releaseDate: '2022-05-12',
+                    cast: ['Mahesh Babu', 'Keerthy Suresh'],
+                    director: 'Parasuram',
+                    streaming: [
+                        { platform: 'Amazon Prime', subscription: true }
+                    ],
+                    trailer: 'https://www.youtube.com/embed/Mk9Uu0BxQ5Q'
+                },
+                {
+                    id: 8,
+                    title: 'Bheemla Nayak',
+                    imageUrl: 'https://m.media-amazon.com/images/M/MV5BZWI1YzI0ZDUtZTE0Yi00ZDFkLTk0YzUtYzU4OTU1MGNiOWQ0XkEyXkFqcGdeQXVyMTQ3Mzk2MDg4._V1_.jpg',
+                    overview: 'A heated altercation between a haughty retired military officer and an upright SI escalates into an ego clash.',
+                    rating: '7.1',
+                    genre: 'Action, Drama',
+                    language: 'telugu',
+                    releaseDate: '2022-02-25',
+                    cast: ['Pawan Kalyan', 'Rana Daggubati'],
+                    director: 'Sagar K Chandra',
+                    streaming: [
+                        { platform: 'Disney+ Hotstar', subscription: true }
+                    ],
+                    trailer: 'https://www.youtube.com/embed/1w7R8vH3pQY'
+                },
+                {
+                    id: 9,
+                    title: 'KGF: Chapter 1',
+                    imageUrl: 'https://m.media-amazon.com/images/M/MV5BMjMwMDgyOGQtMWZjNC00MDUwLTllZDYtZWM3NDBmN2YzNGZmXkEyXkFqcGdeQXVyMTQxNzMzNDI@._V1_.jpg',
+                    overview: 'In the 1970s, a gangster tries to control the gold mine in Kolar Gold Fields and become the most powerful man in India.',
+                    rating: '8.2',
+                    genre: 'Action, Drama, Crime',
+                    language: 'kannada',
+                    releaseDate: '2018-12-21',
+                    cast: ['Yash', 'Srinidhi Shetty'],
+                    director: 'Prashanth Neel',
+                    streaming: [
+                        { platform: 'Amazon Prime', subscription: true }
+                    ],
+                    trailer: 'https://www.youtube.com/embed/qXgF-iJ_ezE'
+                },
+                {
+                    id: 10,
+                    title: 'KGF: Chapter 2',
+                    imageUrl: 'https://m.media-amazon.com/images/M/MV5BMjMwMDgyOGQtMWZjNC00MDUwLTllZDYtZWM3NDBmN2YzNGZmXkEyXkFqcGdeQXVyMTQxNzMzNDI@._V1_.jpg',
+                    overview: 'Rocky takes control of the Kolar Gold Fields and his newfound power makes the government as well as his enemies nervous.',
+                    rating: '8.4',
+                    genre: 'Action, Drama, Crime',
+                    language: 'kannada',
+                    releaseDate: '2022-04-14',
+                    cast: ['Yash', 'Sanjay Dutt', 'Raveena Tandon'],
+                    director: 'Prashanth Neel',
+                    streaming: [
+                        { platform: 'Amazon Prime', subscription: true }
+                    ],
+                    trailer: 'https://www.youtube.com/embed/JKa05nyUmuQ'
+                },
+                {
+                    id: 11,
+                    title: 'Vikram',
+                    imageUrl: 'https://m.media-amazon.com/images/M/MV5BOTk2NzEyNTUtZGU0My00N2YwLWJlYTItZTU3YzM0YTE0ZmU4XkEyXkFqcGdeQXVyMTQ3Mzk2MDg4._V1_.jpg',
+                    overview: 'A special investigator discovers a case of serial killings is not what it seems, leading him to a drug kingpin.',
+                    rating: '8.4',
+                    genre: 'Action, Thriller, Crime',
+                    language: 'tamil',
+                    releaseDate: '2022-06-03',
+                    cast: ['Kamal Haasan', 'Vijay Sethupathi', 'Fahadh Faasil'],
+                    director: 'Lokesh Kanagaraj',
+                    streaming: [
+                        { platform: 'Disney+ Hotstar', subscription: true }
+                    ],
+                    trailer: 'https://www.youtube.com/embed/OKBMCL-frPU'
+                },
+                {
+                    id: 12,
+                    title: 'Ponniyin Selvan: Part 1',
+                    imageUrl: 'https://m.media-amazon.com/images/M/MV5BODNkYzYzYTMtZjc4My00Y2QyLWFkNjYtNWQ1ZDBiYjY0OTZmXkEyXkFqcGdeQXVyMTQ3Mzk2MDg4._V1_.jpg',
+                    overview: 'The Chola dynasty is at its peak in 10th century India. A political assassination plot emerges against the crown prince.',
+                    rating: '7.8',
+                    genre: 'Action, Drama, Historical',
+                    language: 'tamil',
+                    releaseDate: '2022-09-30',
+                    cast: ['Vikram', 'Aishwarya Rai', 'Karthi'],
+                    director: 'Mani Ratnam',
+                    streaming: [
+                        { platform: 'Amazon Prime', subscription: true }
+                    ],
+                    trailer: 'https://www.youtube.com/embed/KsH2LA8pCjo'
+                },
+                {
+                    id: 13,
+                    title: 'Ponniyin Selvan: Part 2',
+                    imageUrl: 'https://m.media-amazon.com/images/M/MV5BZWRjZGFmY2EtYjJhZS00NjkwLWE0MGYtNTE4ZWI0MzQwYjQzXkEyXkFqcGdeQXVyMTQ3Mzk2MDg4._V1_.jpg',
+                    overview: 'The Chola dynasty faces internal conspiracies and external threats as the succession crisis deepens.',
+                    rating: '8.0',
+                    genre: 'Action, Drama, Historical',
+                    language: 'tamil',
+                    releaseDate: '2023-04-28',
+                    cast: ['Vikram', 'Aishwarya Rai', 'Karthi'],
+                    director: 'Mani Ratnam',
+                    streaming: [
+                        { platform: 'Amazon Prime', subscription: true }
+                    ],
+                    trailer: 'https://www.youtube.com/embed/VjXbT2_uC9Y'
+                },
+                {
+                    id: 14,
+                    title: 'Jai Bhim',
+                    imageUrl: 'https://m.media-amazon.com/images/M/MV5BOTM0NWFjNGYtNjExMS00ZTZlLWFiYmMtZmU4ZjZkMmMxZTNjXkEyXkFqcGdeQXVyODEyNjEwMDk@._V1_.jpg',
+                    overview: 'A tribal woman and a righteous lawyer battle in court to unravel the truth behind the disappearance of her husband.',
+                    rating: '8.9',
+                    genre: 'Crime, Drama, Mystery',
+                    language: 'tamil',
+                    releaseDate: '2021-11-02',
+                    cast: ['Suriya', 'Lijomol Jose'],
+                    director: 'T.J. Gnanavel',
+                    streaming: [
+                        { platform: 'Amazon Prime', subscription: true }
+                    ],
+                    trailer: 'https://www.youtube.com/embed/nnXpbTFrqXA'
+                },
+                {
+                    id: 15,
+                    title: 'Vedalam',
+                    imageUrl: 'https://m.media-amazon.com/images/M/MV5BZWVhMzI5ZWQtYzQ1YS00YjVmLThlYjktY2QyNTQ0ZDQxYzVkXkEyXkFqcGdeQXVyOTk3NTc2MzE@._V1_.jpg',
+                    overview: 'A taxi driver with a mysterious past comes to Kolkata to visit his sister and gets entangled with the local mafia.',
+                    rating: '7.0',
+                    genre: 'Action, Comedy, Drama',
+                    language: 'tamil',
+                    releaseDate: '2015-11-10',
+                    cast: ['Ajith Kumar', 'Shruti Haasan'],
+                    director: 'Siva',
+                    streaming: [
+                        { platform: 'Amazon Prime', subscription: true }
+                    ],
+                    trailer: 'https://www.youtube.com/embed/1QZ4U9b0D3Y'
+                },
+                // Hindi Movies
+                {
+                    id: 16,
+                    title: 'Dangal',
+                    imageUrl: 'https://m.media-amazon.com/images/M/MV5BMTQ4MzQzMzM2Nl5BMl5BanBnXkFtZTgwMTQ1NzU3MDI@._V1_.jpg',
+                    overview: 'Former wrestler Mahavir Singh Phogat trains his daughters Geeta and Babita to become India\'s first world-class female wrestlers.',
+                    rating: '8.4',
+                    genre: 'Action, Biography, Drama',
+                    language: 'hindi',
+                    releaseDate: '2016-12-21',
+                    cast: ['Aamir Khan', 'Sakshi Tanwar', 'Fatima Sana Shaikh'],
+                    director: 'Nitesh Tiwari',
+                    streaming: [
+                        { platform: 'Netflix', subscription: true }
+                    ],
+                    trailer: 'https://www.youtube.com/embed/x_7YlGv9u1g'
+                },
+                {
+                    id: 17,
+                    title: '3 Idiots',
+                    imageUrl: 'https://m.media-amazon.com/images/M/MV5BNTkyOGVjMGEtNmQzZi00NzFlLTlhOWQtODYyMDc2ZGJmYzFhXkEyXkFqcGdeQXVyNjU0OTQ0OTY@._V1_.jpg',
+                    overview: 'Two friends search for their long lost companion who inspired them to think differently at college.',
+                    rating: '8.4',
+                    genre: 'Comedy, Drama',
+                    language: 'hindi',
+                    releaseDate: '2009-12-25',
+                    cast: ['Aamir Khan', 'Madhavan', 'Sharman Joshi'],
+                    director: 'Rajkumar Hirani',
+                    streaming: [
+                        { platform: 'Netflix', subscription: true }
+                    ],
+                    trailer: 'https://www.youtube.com/embed/K0eDlFX9GMc'
+                },
+                {
+                    id: 18,
+                    title: 'Pathaan',
+                    imageUrl: 'https://m.media-amazon.com/images/M/MV5BM2QzM2JiNTMtYjU4Ny00MDZkLTk3MmUtYTRjMzVkZGJlNmYyXkEyXkFqcGdeQXVyMTUzNTgzNzM0._V1_.jpg',
+                    overview: 'An Indian spy battles against the leader of a gang of mercenaries with a bitter vendetta against his country.',
+                    rating: '6.6',
+                    genre: 'Action, Adventure, Thriller',
+                    language: 'hindi',
+                    releaseDate: '2023-01-25',
+                    cast: ['Shah Rukh Khan', 'Deepika Padukone', 'John Abraham'],
+                    director: 'Siddharth Anand',
+                    streaming: [
+                        { platform: 'Amazon Prime', subscription: true }
+                    ],
+                    trailer: 'https://www.youtube.com/embed/vqu4z34wENw'
+                },
+                {
+                    id: 19,
+                    title: 'Jawan',
+                    imageUrl: 'https://m.media-amazon.com/images/M/MV5BNDcyYjlkM2YtNDk5Yy00MGU5LTg0OTEtZGY1NjVhNWFkYjA0XkEyXkFqcGdeQXVyMTUzNTgzNzM0._V1_.jpg',
+                    overview: 'A man is driven by a personal vendetta to rectify the wrongs in society, while keeping a promise made years ago.',
+                    rating: '7.0',
+                    genre: 'Action, Thriller',
+                    language: 'hindi',
+                    releaseDate: '2023-09-07',
+                    cast: ['Shah Rukh Khan', 'Nayanthara', 'Vijay Sethupathi'],
+                    director: 'Atlee',
+                    streaming: [
+                        { platform: 'Netflix', subscription: true }
+                    ],
+                    trailer: 'https://www.youtube.com/embed/COv52Qyctws'
+                },
+                {
+                    id: 20,
+                    title: 'Kabir Singh',
+                    imageUrl: 'https://m.media-amazon.com/images/M/MV5BOTg0ZjY0N2QtNGQ3Yi00MzVjLTg1YjAtMDk5OGY4Mzc4YzU1XkEyXkFqcGdeQXVyODE5NzE3OTE@._V1_.jpg',
+                    overview: 'A brilliant surgeon with a temper falls into self-destructive tendencies when his lover is forced to marry someone else.',
+                    rating: '7.1',
+                    genre: 'Drama, Romance',
+                    language: 'hindi',
+                    releaseDate: '2019-06-21',
+                    cast: ['Shahid Kapoor', 'Kiara Advani'],
+                    director: 'Sandeep Reddy Vanga',
+                    streaming: [
+                        { platform: 'Amazon Prime', subscription: true }
+                    ],
+                    trailer: 'https://www.youtube.com/embed/5gSrJI9m1Yk'
+                },
+                // More Telugu Movies
+                {
+                    id: 21,
+                    title: 'Arjun Reddy',
+                    imageUrl: 'https://m.media-amazon.com/images/M/MV5BNTgwYmY3Y2QtMWFlOC00YzIzLWI1MTItYjA0ZmQ0Y2E5NTg5XkEyXkFqcGdeQXVyNTgxODY5ODI@._V1_.jpg',
+                    overview: 'A short-tempered house surgeon gets used to drugs and drinks when his girlfriend is forced to marry another man.',
+                    rating: '8.1',
+                    genre: 'Drama, Romance',
+                    language: 'telugu',
+                    releaseDate: '2017-08-25',
+                    cast: ['Vijay Deverakonda', 'Shalini Pandey'],
+                    director: 'Sandeep Reddy Vanga',
+                    streaming: [
+                        { platform: 'Amazon Prime', subscription: true }
+                    ],
+                    trailer: 'https://www.youtube.com/embed/5gSrJI9m1Yk'
+                },
+                {
+                    id: 22,
+                    title: 'Magadheera',
+                    imageUrl: 'https://m.media-amazon.com/images/M/MV5BZDA4MWZiZDctYzVjYi00ZGUxLTg0ZDAtODJhZTIwYjVlZTI0XkEyXkFqcGdeQXVyMjMyNjkwMTY@._V1_.jpg',
+                    overview: 'A motorcycle stuntman recalls his past life as a warrior, and seeks to rescue his reincarnated lover from a tyrant.',
+                    rating: '8.0',
+                    genre: 'Action, Fantasy, Romance',
+                    language: 'telugu',
+                    releaseDate: '2009-07-31',
+                    cast: ['Ram Charan', 'Kajal Aggarwal'],
+                    director: 'S.S. Rajamouli',
+                    streaming: [
+                        { platform: 'Amazon Prime', subscription: true }
+                    ],
+                    trailer: 'https://www.youtube.com/embed/aH-Xi4TM1s8'
+                },
+                {
+                    id: 23,
+                    title: 'Eega',
+                    imageUrl: 'https://m.media-amazon.com/images/M/MV5BMTQ0ODI3NzM5OV5BMl5BanBnXkFtZTgwMDM5MjA4NjE@._V1_.jpg',
+                    overview: 'A murdered man is reincarnated as a housefly and seeks to avenge his death and protect his love from his killer.',
+                    rating: '7.8',
+                    genre: 'Action, Comedy, Fantasy',
+                    language: 'telugu',
+                    releaseDate: '2012-07-06',
+                    cast: ['Sudeep', 'Nani', 'Samantha'],
+                    director: 'S.S. Rajamouli',
+                    streaming: [
+                        { platform: 'Amazon Prime', subscription: true }
+                    ],
+                    trailer: 'https://www.youtube.com/embed/8V5LQ2jXE6o'
+                },
+                // More Tamil Movies
+                {
+                    id: 24,
+                    title: 'Master',
+                    imageUrl: 'https://m.media-amazon.com/images/M/MV5BNjRjZjQyNzAtMDM5ZS00MGUwLTg4NmMtZTE4NjA3Y2QyM2YyXkEyXkFqcGdeQXVyMTI1NDEyNTM5._V1_.jpg',
+                    overview: 'An alcoholic professor is sent to a juvenile school, where he clashes with a gangster who uses the children for criminal activities.',
+                    rating: '7.6',
+                    genre: 'Action, Drama',
+                    language: 'tamil',
+                    releaseDate: '2021-01-13',
+                    cast: ['Vijay', 'Vijay Sethupathi'],
+                    director: 'Lokesh Kanagaraj',
+                    streaming: [
+                        { platform: 'Amazon Prime', subscription: true }
+                    ],
+                    trailer: 'https://www.youtube.com/embed/UTiXQcrLlv4'
+                },
+                {
+                    id: 25,
+                    title: 'Kaithi',
+                    imageUrl: 'https://m.media-amazon.com/images/M/MV5BMjI4MTIzODUxNV5BMl5BanBnXkFtZTgwMjU1NzY2NzM@._V1_.jpg',
+                    overview: 'A recently released prisoner races against time to meet his daughter for the first time, while caught in a police-drug mafia crossfire.',
+                    rating: '8.5',
+                    genre: 'Action, Thriller',
+                    language: 'tamil',
+                    releaseDate: '2019-10-25',
+                    cast: ['Karthi'],
+                    director: 'Lokesh Kanagaraj',
+                    streaming: [
+                        { platform: 'Amazon Prime', subscription: true }
+                    ],
+                    trailer: 'https://www.youtube.com/embed/JdLk4Z8QJCI'
+                },
+                // More Hindi Movies
+                {
+                    id: 26,
+                    title: 'Lagaan',
+                    imageUrl: 'https://m.media-amazon.com/images/M/MV5BNDYxNWUzZmYtOGQxMC00MTdkLTkxOTctYzkyOGIwNWQxZjhmXkEyXkFqcGdeQXVyNjU0OTQ0OTY@._V1_.jpg',
+                    overview: 'The people of a small village in Victorian India stake their future on a game of cricket against their ruthless British rulers.',
+                    rating: '8.1',
+                    genre: 'Drama, Musical, Sport',
+                    language: 'hindi',
+                    releaseDate: '2001-06-15',
+                    cast: ['Aamir Khan', 'Gracy Singh'],
+                    director: 'Ashutosh Gowariker',
+                    streaming: [
+                        { platform: 'Netflix', subscription: true }
+                    ],
+                    trailer: 'https://www.youtube.com/embed/oSIGQ0YkFxs'
+                },
+                {
+                    id: 27,
+                    title: 'Gully Boy',
+                    imageUrl: 'https://m.media-amazon.com/images/M/MV5BM2Q4Y2NjYjItMDA2OC00NjM3LWFjMzctMWQwZDA2MGYzOGYzXkEyXkFqcGdeQXVyMDc2NTEzMw@@._V1_.jpg',
+                    overview: 'A coming-of-age story based on the lives of street rappers in Mumbai.',
+                    rating: '8.1',
+                    genre: 'Drama, Music',
+                    language: 'hindi',
+                    releaseDate: '2019-02-14',
+                    cast: ['Ranveer Singh', 'Alia Bhatt'],
+                    director: 'Zoya Akhtar',
+                    streaming: [
+                        { platform: 'Amazon Prime', subscription: true }
+                    ],
+                    trailer: 'https://www.youtube.com/embed/JfbxcD6biOk'
+                },
+                // English Movies (kept from original)
+                {
+                    id: 28,
+                    title: 'Interstellar',
+                    imageUrl: 'https://m.media-amazon.com/images/M/MV5BZjdkOTU3MDktN2IxOS00OGEyLWFmMjktY2FiMmZkNWIyODZiXkEyXkFqcGdeQXVyMTMxODk2OTU@._V1_.jpg',
+                    overview: 'A team of explorers travel through a wormhole in space in an attempt to ensure humanity\'s survival.',
+                    rating: '8.6',
+                    genre: 'Sci-Fi, Adventure, Drama',
+                    language: 'english',
+                    releaseDate: '2014-11-07',
+                    cast: ['Matthew McConaughey', 'Anne Hathaway'],
+                    director: 'Christopher Nolan',
+                    streaming: [
+                        { platform: 'Amazon Prime', subscription: true },
+                        { platform: 'Netflix', subscription: true }
+                    ],
+                    trailer: 'https://www.youtube.com/embed/zSWdZVtXT7E'
+                },
+                {
+                    id: 29,
+                    title: 'The Shawshank Redemption',
+                    imageUrl: 'https://m.media-amazon.com/images/M/MV5BNDE3ODcxYzMtY2YzZC00NmNlLWJiNDMtZDViZWM2MzIxZDYwXkEyXkFqcGdeQXVyNjAwNDUxODI@._V1_.jpg',
+                    overview: 'Two imprisoned men bond over a number of years, finding solace and eventual redemption through acts of common decency.',
+                    rating: '9.3',
+                    genre: 'Drama',
+                    language: 'english',
+                    releaseDate: '1994-09-23',
+                    cast: ['Tim Robbins', 'Morgan Freeman'],
+                    director: 'Frank Darabont',
+                    streaming: [
+                        { platform: 'Netflix', subscription: true }
+                    ],
+                    trailer: 'https://www.youtube.com/embed/6hB3S9bIaco'
+                },
+                // Malayalam Movies
+                {
+                    id: 30,
+                    title: 'Drishyam',
+                    imageUrl: 'https://m.media-amazon.com/images/M/MV5BYmY3MzYwMGUtOWMxYS00OGVhLWFjNmUtYzlkNGVmY2ZkMjA3XkEyXkFqcGdeQXVyMTExNDQ2MTI@._V1_.jpg',
+                    overview: 'A man goes to extreme lengths to protect his family after they commit an unexpected crime.',
+                    rating: '8.2',
+                    genre: 'Crime, Drama, Thriller',
+                    language: 'malayalam',
+                    releaseDate: '2013-12-19',
+                    cast: ['Mohanlal', 'Meena'],
+                    director: 'Jeethu Joseph',
+                    streaming: [
+                        { platform: 'Amazon Prime', subscription: true }
+                    ],
+                    trailer: 'https://www.youtube.com/embed/AuuX2j14NBg'
+                },
+                {
+                    id: 31,
+                    title: 'Premam',
+                    imageUrl: 'https://m.media-amazon.com/images/M/MV5BNThiYjIwN2ItZjA5Mi00MDk1LWEwM2MtYWYyNDY4YjFhMWQ3XkEyXkFqcGdeQXVyODE5NzE3OTE@._V1_.jpg',
+                    overview: 'A young man experiences three phases of love in his life, each with a different woman.',
+                    rating: '8.3',
+                    genre: 'Comedy, Drama, Romance',
+                    language: 'malayalam',
+                    releaseDate: '2015-05-29',
+                    cast: ['Nivin Pauly', 'Sai Pallavi'],
+                    director: 'Alphonse Puthren',
+                    streaming: [
+                        { platform: 'Amazon Prime', subscription: true }
+                    ],
+                    trailer: 'https://www.youtube.com/embed/1IA0uQjQqXk'
+                },
+                // Kannada Movies
+                {
+                    id: 32,
+                    title: 'Kantara',
+                    imageUrl: 'https://m.media-amazon.com/images/M/MV5BNjIwN2NjYWItMWE5Yi00YThiLThhZDItMjM1N2IxZmM5YzY4XkEyXkFqcGdeQXVyMTUzNTgzNzM0._V1_.jpg',
+                    overview: 'A human vs. nature conflict in a village, with a local demigod at the center of it.',
+                    rating: '8.2',
+                    genre: 'Action, Drama, Thriller',
+                    language: 'kannada',
+                    releaseDate: '2022-09-30',
+                    cast: ['Rishab Shetty', 'Sapthami Gowda'],
+                    director: 'Rishab Shetty',
+                    streaming: [
+                        { platform: 'Amazon Prime', subscription: true }
+                    ],
+                    trailer: 'https://www.youtube.com/embed/9dZyQdpdo0k'
+                }
+            ];
+
+            function createMovieItem(movie) {
+                const movieItem = document.createElement('div');
+                movieItem.classList.add('movie-item');
+                movieItem.innerHTML = `
+                    <img src="${movie.imageUrl}" alt="${movie.title}">
+                    <div class="overlay">
+                        <div class="movie-title">${movie.title} (${movie.language.toUpperCase()})</div>
+                        <div class="movie-details">
+                            <p>${movie.overview.substring(0, 100)}...</p>
+                            <p>Rating: ${movie.rating}</p>
+                            <p>Genre: ${movie.genre}</p>
+                            <p>Cast: ${movie.cast.join(', ')}</p>
+                        </div>
+                    </div>
+                `;
+                
+                movieItem.addEventListener('click', () => {
+                    localStorage.setItem('selectedMovie', JSON.stringify(movie));
+                    window.location.href = 'movie-details.html';
+                });
+                
+                return movieItem;
+            }
+
+            function displayMovies(moviesToDisplay) {
+                const moviesGrid = document.getElementById('movies-grid');
+                moviesGrid.innerHTML = '';
+                moviesToDisplay.forEach(movie => {
+                    moviesGrid.appendChild(createMovieItem(movie));
+                });
+                document.getElementById('results-count').textContent = `${moviesToDisplay.length} movies found`;
+            }
+
+            // Filter movies based on selected filters
+            function filterMovies() {
+                const searchTerm = document.getElementById('search-input').value.toLowerCase();
+                const selectedLanguages = Array.from(document.querySelectorAll('.language.active')).map(btn => btn.dataset.language);
+                const selectedGenres = Array.from(document.querySelectorAll('.filter-btn:not(.language).active')).map(btn => btn.dataset.genre);
+                
+                let filteredMovies = movies;
+                
+                // Apply language filter
+                if (!selectedLanguages.includes('all')) {
+                    filteredMovies = filteredMovies.filter(movie => 
+                        selectedLanguages.includes(movie.language)
+                    );
+                }
+                
+                // Apply genre filter
+                if (!selectedGenres.includes('all')) {
+                    filteredMovies = filteredMovies.filter(movie => 
+                        selectedGenres.some(genre => 
+                            movie.genre.toLowerCase().includes(genre.toLowerCase())
+                        )
+                    );
+                }
+                
+                // Apply search filter
+                if (searchTerm) {
+                    filteredMovies = filteredMovies.filter(movie => 
+                        movie.title.toLowerCase().includes(searchTerm) || 
+                        movie.overview.toLowerCase().includes(searchTerm) ||
+                        movie.genre.toLowerCase().includes(searchTerm) ||
+                        movie.cast.some(actor => actor.toLowerCase().includes(searchTerm)) ||
+                        movie.director.toLowerCase().includes(searchTerm)
+                    );
+                }
+                
+                displayMovies(filteredMovies);
+            }
+
+            // Initialize filters
+            function initFilters() {
+                // Language filter buttons
+                document.querySelectorAll('.language').forEach(button => {
+                    button.addEventListener('click', function() {
+                        if (this.dataset.language === 'all') {
+                            // If "All" is clicked, deactivate other language buttons
+                            document.querySelectorAll('.language').forEach(btn => {
+                                btn.classList.remove('active');
+                            });
+                            this.classList.add('active');
+                        } else {
+                            // If specific language is clicked, deactivate "All"
+                            document.querySelector('.language[data-language="all"]').classList.remove('active');
+                            this.classList.toggle('active');
+                            
+                            // If no languages selected, activate "All"
+                            if (document.querySelectorAll('.language.active').length === 0) {
+                                document.querySelector('.language[data-language="all"]').classList.add('active');
+                            }
+                        }
+                        filterMovies();
+                    });
+                });
+                
+                // Genre filter buttons
+                document.querySelectorAll('.filter-btn:not(.language)').forEach(button => {
+                    button.addEventListener('click', function() {
+                        if (this.dataset.genre === 'all') {
+                            // If "All" is clicked, deactivate other genre buttons
+                            document.querySelectorAll('.filter-btn:not(.language)').forEach(btn => {
+                                btn.classList.remove('active');
+                            });
+                            this.classList.add('active');
+                        } else {
+                            // If specific genre is clicked, deactivate "All"
+                            document.querySelector('.filter-btn[data-genre="all"]').classList.remove('active');
+                            this.classList.toggle('active');
+                            
+                            // If no genres selected, activate "All"
+                            if (document.querySelectorAll('.filter-btn:not(.language).active').length === 0) {
+                                document.querySelector('.filter-btn[data-genre="all"]').classList.add('active');
+                            }
+                        }
+                        filterMovies();
+                    });
+                });
+                
+                // Search input
+                document.getElementById('search-input').addEventListener('input', filterMovies);
+                
+                // Reset filters button
+                document.getElementById('reset-filters').addEventListener('click', () => {
+                    document.getElementById('search-input').value = '';
+                    
+                    // Reset language filters
+                    document.querySelectorAll('.language').forEach(btn => {
+                        btn.classList.remove('active');
+                    });
+                    document.querySelector('.language[data-language="all"]').classList.add('active');
+                    
+                    // Reset genre filters
+                    document.querySelectorAll('.filter-btn:not(.language)').forEach(btn => {
+                        btn.classList.remove('active');
+                    });
+                    document.querySelector('.filter-btn[data-genre="all"]').classList.add('active');
+                    
+                    filterMovies();
+                });
+            }
+
+            // Initial display of all movies
+            initFilters();
+            filterMovies();
+        });
+    </script>
+</body>
+</html>

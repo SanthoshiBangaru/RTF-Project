@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movie Recommender - Home</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <a href="index.html" class="logo">Movie Recommender</a>
+        <nav class="nav-links">
+            <a href="index.html"><i class="fas fa-home"></i>Home</a>
+            <a href="movies.html"><i class="fas fa-film"></i>Movies</a>
+            <a href="mylist.html"><i class="fas fa-heart"></i>Wishlist</a>
+            <a href="Login.html"><i class="fas fa-sign-in-alt"></i>Login</a>
+        </nav>
+        <div class="header-right">
+            <button id="theme-toggle"><i class="fas fa-moon"></i> Dark Mode</button>
+            <button id="profile-button"><i class="fas fa-user-circle"></i> Profile</button>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <div class="genre-buttons">
+            <button class="genre-btn" data-genre="action">Action</button>
+            <button class="genre-btn" data-genre="comedy">Comedy</button>
+            <button class="genre-btn" data-genre="drama">Drama</button>
+            <button class="genre-btn" data-genre="sci-fi">Sci-Fi</button>
+            <button class="genre-btn" data-genre="thriller">Thriller</button>
+            <button class="genre-btn active" data-genre="all">All</button>
+        </div>
+
+        <div class="movie-row" id="trending">
+            <h2 class="section-title"><i class="fas fa-fire"></i> Trending Now</h2>
+            <div class="movie-list"></div>
+        </div>
+
+        <div class="movie-row" id="top-rated">
+            <h2 class="section-title"><i class="fas fa-star"></i> Top Rated</h2>
+            <div class="movie-list"></div>
+        </div>
+
+        <div class="movie-row" id="recommended">
+            <h2 class="section-title"><i class="fas fa-thumbs-up"></i> Recommended</h2>
+            <div class="movie-list"></div>
+        </div>
+    </main>
+
+    <footer>
+        &copy; 2025 Movie Recommendation System
+    </footer>
+
+    <script src="script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const movies = [
+                {
+                    id: 1,
+                    title: 'Interstellar',
+                    imageUrl: 'https://m.media-amazon.com/images/M/MV5BZjdkOTU3MDktN2IxOS00OGEyLWFmMjktY2FiMmZkNWIyODZiXkEyXkFqcGdeQXVyMTMxODk2OTU@._V1_.jpg',
+                    overview: 'A team of explorers travel through a wormhole in space in an attempt to ensure humanity\'s survival.',
+                    rating: '8.6',
+                    genre: 'Sci-Fi, Adventure, Drama',
+                    releaseDate: '2014-11-07',
+                    streaming: [
+                        { platform: 'Amazon Prime', subscription: true },
+                        { platform: 'Netflix', subscription: true },
+                        { platform: 'YouTube', subscription: false }
+                    ],
+                    trailer: 'https://www.youtube.com/embed/zSWdZVtXT7E'
+                },
+                {
+                    id: 2,
+                    title: 'RRR',
+                    imageUrl: 'https://upload.wikimedia.org/wikipedia/en/d/d7/RRR_Poster.jpg',
+                    overview: 'A fictional history of two legendary revolutionaries and their journey away from home before they started fighting for their country.',
+                    rating: '7.9',
+                    genre: 'Action, Drama',
+                    releaseDate: '2022-03-25',
+                    streaming: [
+                        { platform: 'Netflix', subscription: true },
+                        { platform: 'Zee5', subscription: true },
+                        { platform: 'YouTube', subscription: true }
+                    ],
+                    trailer: 'https://www.youtube.com/embed/f_vbAtFSEc0'
+                },
+                {
+                    id: 3,
+                    title: 'The Shawshank Redemption',
+                    imageUrl: 'https://m.media-amazon.com/images/M/MV5BNDE3ODcxYzMtY2YzZC00NmNlLWJiNDMtZDViZWM2MzIxZDYwXkEyXkFqcGdeQXVyNjAwNDUxODI@._V1_.jpg',
+                    overview: 'Two imprisoned men bond over a number of years, finding solace and eventual redemption through acts of common decency.',
+                    rating: '9.3',
+                    genre: 'Drama',
+                    releaseDate: '1994-09-23',
+                    streaming: [
+                        { platform: 'Netflix', subscription: true },
+                        { platform: 'Amazon Prime', subscription: true }
+                    ],
+                    trailer: 'https://www.youtube.com/embed/6hB3S9bIaco'
+                },
+                {
+                    id: 4,
+                    title: 'The Dark Knight',
+                    imageUrl: 'https://m.media-amazon.com/images/M/MV5BMTMxNTMwODM0NF5BMl5BanBnXkFtZTcwODAyMTk2Mw@@._V1_.jpg',
+                    overview: 'When the menace known as the Joker wreaks havoc and chaos on the people of Gotham, Batman must accept one of the greatest psychological and physical tests of his ability to fight injustice.',
+                    rating: '9.0',
+                    genre: 'Action, Crime, Drama',
+                    releaseDate: '2008-07-18',
+                    streaming: [
+                        { platform: 'HBO Max', subscription: true },
+                        { platform: 'Amazon Prime', subscription: true }
+                    ],
+                    trailer: 'https://www.youtube.com/embed/EXeTwQWrcwY'
+                },
+                {
+                    id: 5,
+                    title: 'Pulp Fiction',
+                    imageUrl: 'https://m.media-amazon.com/images/M/MV5BNGNhMDIzZTUtNTBlZi00MTRlLWFjM2ItYzViMjE3YzI5MjljXkEyXkFqcGdeQXVyNzkwMjQ5NzM@._V1_.jpg',
+                    overview: 'The lives of two mob hitmen, a boxer, a gangster and his wife, and a pair of diner bandits intertwine in four tales of violence and redemption.',
+                    rating: '8.9',
+                    genre: 'Crime, Drama',
+                    releaseDate: '1994-10-14',
+                    streaming: [
+                        { platform: 'Netflix', subscription: true },
+                        { platform: 'Hulu', subscription: true }
+                    ],
+                    trailer: 'https://www.youtube.com/embed/s7EdQ4FqbhY'
+                },
+                {
+                    id: 6,
+                    title: 'Inception',
+                    imageUrl: 'https://m.media-amazon.com/images/M/MV5BMjAxMzY3NjcxNF5BMl5BanBnXkFtZTcwNTI5OTM0Mw@@._V1_.jpg',
+                    overview: 'A thief who steals corporate secrets through the use of dream-sharing technology is given the inverse task of planting an idea into the mind of a C.E.O.',
+                    rating: '8.8',
+                    genre: 'Action, Adventure, Sci-Fi',
+                    releaseDate: '2010-07-16',
+                    streaming: [
+                        { platform: 'Netflix', subscription: true },
+                        { platform: 'Amazon Prime', subscription: true }
+                    ],
+                    trailer: 'https://www.youtube.com/embed/YoHD9XEInc0'
+                },
+                {
+                    id: 7,
+                    title: 'Parasite',
+                    imageUrl: 'https://m.media-amazon.com/images/M/MV5BYWZjMjk3ZTItODQ2ZC00NTY5LWE0ZDYtZTI3MjcwN2Q5NTVkXkEyXkFqcGdeQXVyODk4OTc3MTY@._V1_.jpg',
+                    overview: 'Greed and class discrimination threaten the newly formed symbiotic relationship between the wealthy Park family and the destitute Kim clan.',
+                    rating: '8.6',
+                    genre: 'Comedy, Drama, Thriller',
+                    releaseDate: '2019-05-21',
+                    streaming: [
+                        { platform: 'Hulu', subscription: true },
+                        { platform: 'Amazon Prime', subscription: true }
+                    ],
+                    trailer: 'https://www.youtube.com/embed/5xH0HfJHsaY'
+                },
+                {
+                    id: 8,
+                    title: 'Avengers: Endgame',
+                    imageUrl: 'https://m.media-amazon.com/images/M/MV5BMTc5MDE2ODcwNV5BMl5BanBnXkFtZTgwMzI2NzQ2NzM@._V1_.jpg',
+                    overview: 'After the devastating events of Avengers: Infinity War, the universe is in ruins. With the help of remaining allies, the Avengers assemble once more in order to reverse Thanos\' actions and restore balance to the universe.',
+                    rating: '8.4',
+                    genre: 'Action, Adventure, Sci-Fi',
+                    releaseDate: '2019-04-26',
+                    streaming: [
+                        { platform: 'Disney+', subscription: true },
+                        { platform: 'Amazon Prime', subscription: true }
+                    ],
+                    trailer: 'https://www.youtube.com/embed/TcMBFSGVi1c'
+                },
+                {
+                    id: 9,
+                    title: 'Spirited Away',
+                    imageUrl: 'https://m.media-amazon.com/images/M/MV5BMjlmZmI5MDctNDE2YS00YWE0LWE5ZWItZDBhYWQ0NTcxNWRhXkEyXkFqcGdeQXVyMTMxODk2OTU@._V1_.jpg',
+                    overview: 'During her family\'s move to the suburbs, a sullen 10-year-old girl wanders into a world ruled by gods, witches, and spirits, and where humans are changed into beasts.',
+                    rating: '8.6',
+                    genre: 'Animation, Adventure, Family',
+                    releaseDate: '2001-07-20',
+                    streaming: [
+                        { platform: 'HBO Max', subscription: true },
+                        { platform: 'Netflix', subscription: true }
+                    ],
+                    trailer: 'https://www.youtube.com/embed/ByXuk9QqQkk'
+                },
+                {
+                    id: 10,
+                    title: 'The Godfather',
+                    imageUrl: 'https://m.media-amazon.com/images/M/MV5BM2MyNjYxNmUtYTAwNi00MTYxLWJmNWYtYzZlODY3ZTk3OTFlXkEyXkFqcGdeQXVyNzkwMjQ5NzM@._V1_.jpg',
+                    overview: 'The aging patriarch of an organized crime dynasty transfers control of his clandestine empire to his reluctant son.',
+                    rating: '9.2',
+                    genre: 'Crime, Drama',
+                    releaseDate: '1972-03-24',
+                    streaming: [
+                        { platform: 'Amazon Prime', subscription: true },
+                        { platform: 'Paramount+', subscription: true }
+                    ],
+                    trailer: 'https://www.youtube.com/embed/sY1S34973zA'
+                },
+                {
+                    id: 11,
+                    title: 'Dune',
+                    imageUrl: 'https://m.media-amazon.com/images/M/MV5BN2FjNmEyNWMtYzM0ZS00NjIyLTg5YzYtYThlMGVjNzE1OGViXkEyXkFqcGdeQXVyMTkxNjUyNQ@@._V1_.jpg',
+                    overview: 'Feature adaptation of Frank Herbert\'s science fiction novel about the son of a noble family entrusted with the protection of the most valuable asset and most vital element in the galaxy.',
+                    rating: '8.0',
+                    genre: 'Sci-Fi, Adventure',
+                    releaseDate: '2021-10-22',
+                    streaming: [
+                        { platform: 'HBO Max', subscription: true },
+                        { platform: 'Amazon Prime', subscription: true }
+                    ],
+                    trailer: 'https://www.youtube.com/embed/8g18jFHCLXk'
+                },
+                {
+                    id: 12,
+                    title: 'Everything Everywhere All at Once',
+                    imageUrl: 'https://m.media-amazon.com/images/M/MV5BYTdiOTIyZTQtNmQ1OS00NjZlLWIyMTgtYzk5Y2M3ZDVmMDk1XkEyXkFqcGdeQXVyMTAzMDg4NzU0._V1_.jpg',
+                    overview: 'A middle-aged Chinese immigrant is swept up into an insane adventure in which she alone can save existence by exploring other universes and connecting with the lives she could have led.',
+                    rating: '8.1',
+                    genre: 'Action, Adventure, Comedy',
+                    releaseDate: '2022-03-25',
+                    streaming: [
+                        { platform: 'Showtime', subscription: true },
+                        { platform: 'Amazon Prime', subscription: true }
+                    ],
+                    trailer: 'https://www.youtube.com/embed/wxN1T1uxQ2g'
+                },
+                {
+                    id: 13,
+                    title: 'The Matrix',
+                    imageUrl: 'https://m.media-amazon.com/images/M/MV5BNzQzOTk3OTAtNDQ0Zi00ZTVkLWI0MTEtMDllZjNkYzNjNTc4L2ltYWdlXkEyXkFqcGdeQXVyNjU0OTQ0OTY@._V1_.jpg',
+                    overview: 'A computer hacker learns from mysterious rebels about the true nature of his reality and his role in the war against its controllers.',
+                    rating: '8.7',
+                    genre: 'Action, Sci-Fi',
+                    releaseDate: '1999-03-31',
+                    streaming: [
+                        { platform: 'HBO Max', subscription: true },
+                        { platform: 'Amazon Prime', subscription: true }
+                    ],
+                    trailer: 'https://www.youtube.com/embed/vKQi3bBA1y8'
+                },
+                {
+                    id: 14,
+                    title: 'Forrest Gump',
+                    imageUrl: 'https://m.media-amazon.com/images/M/MV5BNWIwODRlZTUtY2U3ZS00Yzg1LWJhNzYtMmZiYmEyNmU1NjMzXkEyXkFqcGdeQXVyMTQxNzMzNDI@._V1_.jpg',
+                    overview: 'The presidencies of Kennedy and Johnson, the events of Vietnam, Watergate, and other historical events unfold through the perspective of an Alabama man with an IQ of 75.',
+                    rating: '8.8',
+                    genre: 'Drama, Romance',
+                    releaseDate: '1994-07-06',
+                    streaming: [
+                        { platform: 'Netflix', subscription: true },
+                        { platform: 'Amazon Prime', subscription: true }
+                    ],
+                    trailer: 'https://www.youtube.com/embed/bLvqoHBptjg'
+                },
+                {
+                    id: 15,
+                    title: 'The Social Network',
+                    imageUrl: 'https://m.media-amazon.com/images/M/MV5BOGUyZDUxZjEtMmIzMC00MzlmLTg4MGItZWJmMzBhZjE0Mjc1XkEyXkFqcGdeQXVyMTMxODk2OTU@._V1_.jpg',
+                    overview: 'As Harvard student Mark Zuckerberg creates the social networking site that would become known as Facebook, he is sued by the twins who claimed he stole their idea.',
+                    rating: '7.7',
+                    genre: 'Biography, Drama',
+                    releaseDate: '2010-10-01',
+                    streaming: [
+                        { platform: 'Netflix', subscription: true },
+                        { platform: 'Amazon Prime', subscription: true }
+                    ],
+                    trailer: 'https://www.youtube.com/embed/lB95KLmpLR4'
+                },
+                {
+                    id: 16,
+                    title: 'Whiplash',
+                    imageUrl: 'https://m.media-amazon.com/images/M/MV5BOTA5NDZlZGUtMjAxOS00YTRkLTkwYmMtYWQ0NWEwZDZiNjEzXkEyXkFqcGdeQXVyMTMxODk2OTU@._V1_.jpg',
+                    overview: 'A promising young drummer enrolls at a cut-throat music conservatory where his dreams of greatness are mentored by an instructor who will stop at nothing to realize a student\'s potential.',
+                    rating: '8.5',
+                    genre: 'Drama, Music',
+                    releaseDate: '2014-10-10',
+                    streaming: [
+                        { platform: 'Netflix', subscription: true },
+                        { platform: 'Amazon Prime', subscription: true }
+                    ],
+                    trailer: 'https://www.youtube.com/embed/7d_jQycdQGo'
+                },
+                {
+                    id: 17,
+                    title: 'The Grand Budapest Hotel',
+                    imageUrl: 'https://m.media-amazon.com/images/M/MV5BMzM5NjUxOTEyMl5BMl5BanBnXkFtZTgwNjEyMDM0MDE@._V1_.jpg',
+                    overview: 'A writer encounters the owner of an aging high-class hotel, who tells him of his early years serving as a lobby boy in the hotel\'s glorious years under an exceptional concierge.',
+                    rating: '8.1',
+                    genre: 'Adventure, Comedy, Crime',
+                    releaseDate: '2014-03-28',
+                    streaming: [
+                        { platform: 'Disney+', subscription: true },
+                        { platform: 'Amazon Prime', subscription: true }
+                    ],
+                    trailer: 'https://www.youtube.com/embed/1Fg5iWmQjwk'
+                },
+                {
+                    id: 18,
+                    title: 'La La Land',
+                    imageUrl: 'https://m.media-amazon.com/images/M/MV5BMzUzNDM2NzM2MV5BMl5BanBnXkFtZTgwNTM3NTg4OTE@._V1_.jpg',
+                    overview: 'While navigating their careers in Los Angeles, a pianist and an actress fall in love while attempting to reconcile their aspirations for the future.',
+                    rating: '8.0',
+                    genre: 'Comedy, Drama, Music',
+                    releaseDate: '2016-12-09',
+                    streaming: [
+                        { platform: 'Netflix', subscription: true },
+                        { platform: 'Amazon Prime', subscription: true }
+                    ],
+                    trailer: 'https://www.youtube.com/embed/0pdqf4P9MB8'
+                },
+                {
+                    id: 19,
+                    title: 'Joker',
+                    imageUrl: 'https://m.media-amazon.com/images/M/MV5BNGVjNWI4ZGUtNzE0MS00YTJmLWE0ZDctN2ZiYTk2YmI3NTYyXkEyXkFqcGdeQXVyMTkxNjUyNQ@@._V1_.jpg',
+                    overview: 'In Gotham City, mentally troubled comedian Arthur Fleck is disregarded and mistreated by society. He then embarks on a downward spiral of revolution and bloody crime.',
+                    rating: '8.4',
+                    genre: 'Crime, Drama, Thriller',
+                    releaseDate: '2019-10-04',
+                    streaming: [
+                        { platform: 'HBO Max', subscription: true },
+                        { platform: 'Amazon Prime', subscription: true }
+                    ],
+                    trailer: 'https://www.youtube.com/embed/zAGVQLHvwOY'
+                },
+                {
+                    id: 20,
+                    title: 'The Wolf of Wall Street',
+                    imageUrl: 'https://m.media-amazon.com/images/M/MV5BMjIxMjgxNTk0MF5BMl5BanBnXkFtZTgwNjIyOTg2MDE@._V1_.jpg',
+                    overview: 'Based on the true story of Jordan Belfort, from his rise to a wealthy stock-broker living the high life to his fall involving crime, corruption and the federal government.',
+                    rating: '8.2',
+                    genre: 'Biography, Comedy, Crime',
+                    releaseDate: '2013-12-25',
+                    streaming: [
+                        { platform: 'Netflix', subscription: true },
+                        { platform: 'Amazon Prime', subscription: true }
+                    ],
+                    trailer: 'https://www.youtube.com/embed/iszwuX1AK6A'
+                },
+                {
+                    id: 21,
+                    title: 'Fight Club',
+                    imageUrl: 'https://m.media-amazon.com/images/M/MV5BMmEzNTkxYjQtZTc0MC00YTVjLTg5ZTEtZWMwOWVlYzY0NWIwXkEyXkFqcGdeQXVyNzkwMjQ5NzM@._V1_.jpg',
+                    overview: 'An insomniac office worker and a devil-may-care soapmaker form an underground fight club that evolves into something much, much more.',
+                    rating: '8.8',
+                    genre: 'Drama',
+                    releaseDate: '1999-10-15',
+                    streaming: [
+                        { platform: 'Hulu', subscription: true },
+                        { platform: 'Amazon Prime', subscription: true }
+                    ],
+                    trailer: 'https://www.youtube.com/embed/qtRKdVHc-cE'
+                },
+                {
+                    id: 22,
+                    title: 'Gladiator',
+                    imageUrl: 'https://m.media-amazon.com/images/M/MV5BMDliMmNhNDEtODUyOS00MjNlLTgxODEtN2U3NzIxMGVkZTA1L2ltYWdlXkEyXkFqcGdeQXVyNjU0OTQ0OTY@._V1_.jpg',
+                    overview: 'A former Roman General sets out to exact vengeance against the corrupt emperor who murdered his family and sent him into slavery.',
+                    rating: '8.5',
+                    genre: 'Action, Adventure, Drama',
+                    releaseDate: '2000-05-05',
+                    streaming: [
+                        { platform: 'Netflix', subscription: true },
+                        { platform: 'Amazon Prime', subscription: true }
+                    ],
+                    trailer: 'https://www.youtube.com/embed/P5ieIbInFpg'
+                },
+                {
+                    id: 23,
+                    title: 'The Silence of the Lambs',
+                    imageUrl: 'https://m.media-amazon.com/images/M/MV5BNjNhZTk0ZmEtNjJhMi00YzFlLWE1MmEtYzM1M2ZmMGMwMTU4XkEyXkFqcGdeQXVyNjU0OTQ0OTY@._V1_.jpg',
+                    overview: 'A young F.B.I. cadet must receive the help of an incarcerated and manipulative cannibal killer to help catch another serial killer.',
+                    rating: '8.6',
+                    genre: 'Crime, Drama, Thriller',
+                    releaseDate: '1991-02-14',
+                    streaming: [
+                        { platform: 'Amazon Prime', subscription: true },
+                        { platform: 'Hulu', subscription: true }
+                    ],
+                    trailer: 'https://www.youtube.com/embed/W6Mm8Sbe__o'
+                },
+                {
+                    id: 24,
+                    title: 'The Shining',
+                    imageUrl: 'https://m.media-amazon.com/images/M/MV5BZWFlYmY2MGEtZjVkYS00YzU4LTg0YjQtYzY1ZGE3NTA5NGQxXkEyXkFqcGdeQXVyMTQxNzMzNDI@._V1_.jpg',
+                    overview: 'A family heads to an isolated hotel for the winter where a sinister presence influences the father into violence, while his psychic son sees horrific forebodings from both past and future.',
+                    rating: '8.4',
+                    genre: 'Drama, Horror',
+                    releaseDate: '1980-05-23',
+                    streaming: [
+                        { platform: 'HBO Max', subscription: true },
+                        { platform: 'Amazon Prime', subscription: true }
+                    ],
+                    trailer: 'https://www.youtube.com/embed/S014oGZiSdI'
+                },
+                {
+                    id: 25,
+                    title: 'Inglourious Basterds',
+                    imageUrl: 'https://m.media-amazon.com/images/M/MV5BOTJiNDEzOWYtMTVjOC00ZjlmLWE0NGMtZmE1OWVmZDQ2OWJhXkEyXkFqcGdeQXVyNTIzOTk5ODM@._V1_.jpg',
+                    overview: 'In Nazi-occupied France during World War II, a plan to assassinate Nazi leaders by a group of Jewish U.S. soldiers coincides with a theatre owner\'s vengeful plans for the same.',
+                    rating: '8.3',
+                    genre: 'Adventure, Drama, War',
+                    releaseDate: '2009-08-21',
+                    streaming: [
+                        { platform: 'Netflix', subscription: true },
+                        { platform: 'Amazon Prime', subscription: true }
+                    ],
+                    trailer: 'https://www.youtube.com/embed/KnrRy6kSFF0'
+                },
+                {
+                    id: 26,
+                    title: 'The Departed',
+                    imageUrl: 'https://m.media-amazon.com/images/M/MV5BMTI1MTY2OTIxNV5BMl5BanBnXkFtZTYwNjQ4NjY3._V1_.jpg',
+                    overview: 'An undercover cop and a mole in the police attempt to identify each other while infiltrating an Irish gang in South Boston.',
+                    rating: '8.5',
+                    genre: 'Crime, Drama, Thriller',
+                    releaseDate: '2006-10-06',
+                    streaming: [
+                        { platform: 'HBO Max', subscription: true },
+                        { platform: 'Amazon Prime', subscription: true }
+                    ],
+                    trailer: 'https://www.youtube.com/embed/iojhqm0JTW4'
+                },
+                {
+                    id: 27,
+                    title: 'No Country for Old Men',
+                    imageUrl: 'https://m.media-amazon.com/images/M/MV5BMjA5Njk3MjM4OV5BMl5BanBnXkFtZTcwMTc5MTE1MQ@@._V1_.jpg',
+                    overview: 'Violence and mayhem ensue after a hunter stumbles upon a drug deal gone wrong and more than two million dollars in cash near the Rio Grande.',
+                    rating: '8.1',
+                    genre: 'Crime, Drama, Thriller',
+                    releaseDate: '2007-11-21',
+                    streaming: [
+                        { platform: 'Netflix', subscription: true },
+                        { platform: 'Amazon Prime', subscription: true }
+                    ],
+                    trailer: 'https://www.youtube.com/embed/38A__WT3-o0'
+                },
+                {
+                    id: 28,
+                    title: 'The Prestige',
+                    imageUrl: 'https://m.media-amazon.com/images/M/MV5BMjA4NDI0MTIxNF5BMl5BanBnXkFtZTYwNTM0MzY2._V1_.jpg',
+                    overview: 'After a tragic accident, two stage magicians engage in a battle to create the ultimate illusion while sacrificing everything they have to outwit each other.',
+                    rating: '8.5',
+                    genre: 'Drama, Mystery, Thriller',
+                    releaseDate: '2006-10-20',
+                    streaming: [
+                        { platform: 'Disney+', subscription: true },
+                        { platform: 'Amazon Prime', subscription: true }
+                    ],
+                    trailer: 'https://www.youtube.com/embed/RLtaA9fFNXU'
+                },
+                {
+                    id: 29,
+                    title: 'The Green Mile',
+                    imageUrl: 'https://m.media-amazon.com/images/M/MV5BMTUxMzQyNjA5MF5BMl5BanBnXkFtZTYwOTU2NTY3._V1_.jpg',
+                    overview: 'The lives of guards on Death Row are affected by one of their charges: a black man accused of child murder and rape, yet who has a mysterious gift.',
+                    rating: '8.6',
+                    genre: 'Crime, Drama, Fantasy',
+                    releaseDate: '1999-12-10',
+                    streaming: [
+                        { platform: 'Netflix', subscription: true },
+                        { platform: 'Amazon Prime', subscription: true }
+                    ],
+                    trailer: 'https://www.youtube.com/embed/Ki4haFrqSrw'
+                },
+                {
+                    id: 30,
+                    title: 'Goodfellas',
+                    imageUrl: 'https://m.media-amazon.com/images/M/MV5BY2NkZjEzMDgtN2RjYy00YzM1LWI4ZmQtMjIwYjFjNmI3ZGEwXkEyXkFqcGdeQXVyNzkwMjQ5NzM@._V1_.jpg',
+                    overview: 'The story of Henry Hill and his life in the mob, covering his relationship with his wife Karen Hill and his mob partners Jimmy Conway and Tommy DeVito.',
+                    rating: '8.7',
+                    genre: 'Biography, Crime, Drama',
+                    releaseDate: '1990-09-21',
+                    streaming: [
+                        { platform: 'HBO Max', subscription: true },
+                        { platform: 'Amazon Prime', subscription: true }
+                    ],
+                    trailer: 'https://www.youtube.com/embed/qo5jJpHtI1Y'
+                },
+                {
+                    id: 31,
+                    title: 'Se7en',
+                    imageUrl: 'https://m.media-amazon.com/images/M/MV5BOTUwODM5MTctZjczMi00OTk4LTg3NWUtNmVhMTAzNTNjYjcyXkEyXkFqcGdeQXVyNjU0OTQ0OTY@._V1_.jpg',
+                    overview: 'Two detectives, a rookie and a veteran, hunt a serial killer who uses the seven deadly sins as his motives.',
+                    rating: '8.6',
+                    genre: 'Crime, Drama, Mystery',
+                    releaseDate: '1995-09-22',
+                    streaming: [
+                        { platform: 'Netflix', subscription: true },
+                        { platform: 'Amazon Prime', subscription: true }
+                    ],
+                    trailer: 'https://www.youtube.com/embed/znmZoVkCjpI'
+                },
+                {
+                    id: 32,
+                    title: 'The Lion King',
+                    imageUrl: 'https://m.media-amazon.com/images/M/MV5BYTYxNGMyZTYtMjE3MS00MzNjLWFjNmYtMDk3N2FmM2JiM2M1XkEyXkFqcGdeQXVyNjY5NDU4NzI@._V1_.jpg',
+                    overview: 'Lion prince Simba and his father are targeted by his bitter uncle, who wants to ascend the throne himself.',
+                    rating: '8.5',
+                    genre: 'Animation, Adventure, Drama',
+                    releaseDate: '1994-06-24',
+                    streaming: [
+                        { platform: 'Disney+', subscription: true },
+                        { platform: 'Amazon Prime', subscription: true }
+                    ],
+                    trailer: 'https://www.youtube.com/embed/4sj1MT05lAA'
+                }
+            ];
+
+            function createMovieItem(movie) {
+                const movieItem = document.createElement('div');
+                movieItem.classList.add('movie-item');
+                movieItem.innerHTML = `
+                    <img src="${movie.imageUrl}" alt="${movie.title}">
+                    <div class="overlay">
+                        <div class="movie-title">${movie.title}</div>
+                        <div class="movie-details">
+                            <p>${movie.overview.substring(0, 100)}...</p>
+                            <p>Rating: ${movie.rating}</p>
+                        </div>
+                    </div>
+                `;
+                
+                movieItem.addEventListener('click', () => {
+                    // Store the selected movie in localStorage
+                    localStorage.setItem('selectedMovie', JSON.stringify(movie));
+                    // Redirect to movie page
+                    window.location.href = 'movie-details.html';
+                });
+                
+                return movieItem;
+            }
+
+            function displayMovies(moviesToDisplay, sectionId) {
+                const movieList = document.querySelector(`#${sectionId} .movie-list`);
+                movieList.innerHTML = '';
+                moviesToDisplay.forEach(movie => {
+                    movieList.appendChild(createMovieItem(movie));
+                });
+            }
+
+            // Display movies in different sections
+            displayMovies(movies.slice(0, 5), 'trending');
+            displayMovies(movies.slice(5, 10), 'top-rated');
+            displayMovies(movies.slice(10, 15), 'recommended');
+
+            // Genre filtering
+            const genreButtons = document.querySelectorAll('.genre-btn');
+            genreButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    genreButtons.forEach(btn => btn.classList.remove('active'));
+                    button.classList.add('active');
+                    
+                    const genre = button.dataset.genre;
+                    if (genre === 'all') {
+                        displayMovies(movies.slice(0, 5), 'trending');
+                        displayMovies(movies.slice(5, 10), 'top-rated');
+                        displayMovies(movies.slice(10, 15), 'recommended');
+                    } else {
+                        const filtered = movies.filter(movie => 
+                            movie.genre.toLowerCase().includes(genre.toLowerCase())
+                        );
+                        displayMovies(filtered.slice(0, 5), 'trending');
+                        displayMovies(filtered.slice(5, 10), 'top-rated');
+                        displayMovies(filtered.slice(10, 15), 'recommended');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
