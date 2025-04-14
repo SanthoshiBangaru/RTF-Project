@@ -22,29 +22,49 @@
         
         .filter-section {
             display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
+            flex-direction: column;
             gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .filter-groups-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        @media (min-width: 768px) {
+            .filter-groups-container {
+                flex-direction: row;
+                gap: 30px;
+            }
         }
         
         .filter-group {
             display: flex;
             flex-direction: column;
             gap: 10px;
-            flex-grow: 1;
+            width: 100%;
+        }
+        
+        @media (min-width: 768px) {
+            .filter-group {
+                width: calc(50% - 15px);
+            }
         }
         
         .filter-title {
             font-weight: bold;
             margin-bottom: 5px;
+            font-size: 16px;
         }
         
         .filter-buttons {
             display: flex;
             flex-wrap: wrap;
             gap: 8px;
+            overflow-x: auto;
+            padding-bottom: 5px;
         }
         
         .filter-btn {
@@ -55,6 +75,8 @@
             cursor: pointer;
             font-size: 14px;
             transition: all 0.3s;
+            white-space: nowrap;
+            flex-shrink: 0;
         }
         
         .filter-btn.active {
@@ -79,6 +101,7 @@
             border: 1px solid #ddd;
             width: 100%;
             font-size: 16px;
+            box-sizing: border-box;
         }
         
         .results-count {
@@ -95,6 +118,12 @@
             border-radius: 20px;
             cursor: pointer;
             font-size: 14px;
+            align-self: flex-start;
+            margin-top: 10px;
+        }
+        
+        .search-group {
+            margin-bottom: 10px;
         }
     </style>
 </head>
@@ -117,39 +146,41 @@
         <h1><i class="fas fa-film"></i> All Movies</h1>
         
         <div class="filter-section">
-            <div class="filter-group">
+            <div class="filter-group search-group">
                 <div class="filter-title">Search Movies</div>
                 <input type="text" id="search-input" placeholder="Search by title, actor or director...">
             </div>
             
-            <div class="filter-group">
-                <div class="filter-title">Languages</div>
-                <div class="filter-buttons" id="language-filters">
-                    <button class="filter-btn language active" data-language="all">All</button>
-                    <button class="filter-btn language" data-language="telugu">Telugu</button>
-                    <button class="filter-btn language" data-language="tamil">Tamil</button>
-                    <button class="filter-btn language" data-language="hindi">Hindi</button>
-                    <button class="filter-btn language" data-language="english">English</button>
-                    <button class="filter-btn language" data-language="malayalam">Malayalam</button>
-                    <button class="filter-btn language" data-language="kannada">Kannada</button>
+            <div class="filter-groups-container">
+                <div class="filter-group">
+                    <div class="filter-title">Languages</div>
+                    <div class="filter-buttons" id="language-filters">
+                        <button class="filter-btn language active" data-language="all">All</button>
+                        <button class="filter-btn language" data-language="telugu">Telugu</button>
+                        <button class="filter-btn language" data-language="tamil">Tamil</button>
+                        <button class="filter-btn language" data-language="hindi">Hindi</button>
+                        <button class="filter-btn language" data-language="english">English</button>
+                        <button class="filter-btn language" data-language="malayalam">Malayalam</button>
+                        <button class="filter-btn language" data-language="kannada">Kannada</button>
+                    </div>
                 </div>
-            </div>
-            
-            <div class="filter-group">
-                <div class="filter-title">Genres</div>
-                <div class="filter-buttons" id="genre-filters">
-                    <button class="filter-btn active" data-genre="all">All</button>
-                    <button class="filter-btn" data-genre="action">Action</button>
-                    <button class="filter-btn" data-genre="drama">Drama</button>
-                    <button class="filter-btn" data-genre="comedy">Comedy</button>
-                    <button class="filter-btn" data-genre="romance">Romance</button>
-                    <button class="filter-btn" data-genre="thriller">Thriller</button>
-                    <button class="filter-btn" data-genre="sci-fi">Sci-Fi</button>
-                    <button class="filter-btn" data-genre="fantasy">Fantasy</button>
-                    <button class="filter-btn" data-genre="historical">Historical</button>
-                    <button class="filter-btn" data-genre="adventure">Adventure</button>
-                    <button class="filter-btn" data-genre="crime">Crime</button>
-                    <button class="filter-btn" data-genre="horror">Horror</button>
+                
+                <div class="filter-group">
+                    <div class="filter-title">Genres</div>
+                    <div class="filter-buttons" id="genre-filters">
+                        <button class="filter-btn active" data-genre="all">All</button>
+                        <button class="filter-btn" data-genre="action">Action</button>
+                        <button class="filter-btn" data-genre="drama">Drama</button>
+                        <button class="filter-btn" data-genre="comedy">Comedy</button>
+                        <button class="filter-btn" data-genre="romance">Romance</button>
+                        <button class="filter-btn" data-genre="thriller">Thriller</button>
+                        <button class="filter-btn" data-genre="sci-fi">Sci-Fi</button>
+                        <button class="filter-btn" data-genre="fantasy">Fantasy</button>
+                        <button class="filter-btn" data-genre="historical">Historical</button>
+                        <button class="filter-btn" data-genre="adventure">Adventure</button>
+                        <button class="filter-btn" data-genre="crime">Crime</button>
+                        <button class="filter-btn" data-genre="horror">Horror</button>
+                    </div>
                 </div>
             </div>
             
