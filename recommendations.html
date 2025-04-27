@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Recommendations - Movie Recommender</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="recommendations-page">
+    <header>
+        <h1>Your Movie Recommendations</h1>
+        <button id="logout-btn">Logout</button>
+    </header>
+    
+    <div class="container">
+        <section class="preferences-section">
+            <h2>Your Preferences</h2>
+            <div id="user-preferences">
+                <!-- Preferences will be loaded here -->
+            </div>
+            <button id="update-prefs-btn">Update Preferences</button>
+        </section>
+        
+        <section class="recommendations-section">
+            <h2>Recommended For You</h2>
+            <div id="recommendations-list">
+                <!-- Recommendations will be loaded here -->
+            </div>
+        </section>
+    </div>
+    
+    <script src="recommendations.js"></script>
+</body>
+</html>

@@ -10,7 +10,7 @@
 </head>
 <body>
     <header>
-        <a href="index.html" class="logo">Movie Recommender</a>
+        <a href="index.html" class="logo">🎬MovieReco🍿</a>
         <nav class="nav-links">
             <a href="index.html"><i class="fas fa-home"></i>Home</a>
             <a href="movies.html"><i class="fas fa-film"></i>Movies</a>
@@ -22,7 +22,6 @@
             <button id="profile-button"><i class="fas fa-user-circle"></i> Profile</button>
         </div>
     </header>
-
     <main class="main-content">
         <div class="genre-buttons">
             <button class="genre-btn" data-genre="action">Action</button>
@@ -540,6 +539,19 @@
                     movieList.appendChild(createMovieItem(movie));
                 });
             }
+            function displayRecommendedMovies(recommendedMovies) {
+        const recommendedSection = document.querySelector('#recommended .movie-list');
+        recommendedSection.innerHTML = '';
+        
+        if (recommendedMovies.length === 0) {
+            recommendedSection.innerHTML = '<p class="no-results">No recommendations found. Try different preferences.</p>';
+            return;
+        }
+        
+        recommendedMovies.forEach(movie => {
+            recommendedSection.appendChild(createMovieItem(movie));
+        });
+    }
 
             // Display movies in different sections
             displayMovies(movies.slice(0, 5), 'trending');
