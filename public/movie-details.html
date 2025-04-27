@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movie Details</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .movie-detail-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            color: white;
+        }
+        
+        .movie-header {
+            display: flex;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .movie-poster {
+            width: 300px;
+            border-radius: 10px;
+        }
+        
+        .movie-info {
+            flex: 1;
+        }
+        
+        .movie-title {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .movie-meta {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+            color: #ccc;
+        }
+        
+        .movie-overview {
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+        
+        .streaming-options {
+            margin: 30px 0;
+        }
+        
+        .streaming-title {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+        }
+        
+        .platforms {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .platform {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 10px 15px;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .subscription-badge {
+            background: #e50914;
+            color: white;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 0.8rem;
+            margin-left: 5px;
+        }
+        
+        .trailer-container {
+            margin: 40px 0;
+        }
+        
+        .trailer-title {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+        }
+        
+        .trailer-iframe {
+            width: 100%;
+            height: 500px;
+            border: none;
+            border-radius: 10px;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn-primary {
+            background: #e50914;
+            color: white;
+        }
+        
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+        
+        .back-button {
+            margin-bottom: 20px;
+            color: white;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <a href="index.html" class="logo">Movie Recommender</a>
+        <nav class="nav-links">
+            <a href="index.html"><i class="fas fa-home"></i>Home</a>
+            <a href="movies.html"><i class="fas fa-film"></i>Movies</a>
+            <a href="mylist.html"><i class="fas fa-heart"></i>Wishlist</a>
+            <a href="Login.html"><i class="fas fa-sign-in-alt"></i>Login</a>
+        </nav>
+        <div class="header-right">
+            <button id="theme-toggle"><i class="fas fa-moon"></i> Dark Mode</button>
+            <button id="profile-button"><i class="fas fa-user-circle"></i> Profile</button>
+        </div>
+    </header>
+
+    <main class="movie-detail-container">
+        <a href="index.html" class="back-button">
+            <i class="fas fa-arrow-left"></i> Back to Home
+        </a>
+        
+        <div class="movie-header">
+            <img id="detail-poster" class="movie-poster" src="" alt="Movie Poster">
+            <div class="movie-info">
+                <h1 id="detail-title" class="movie-title"></h1>
+                <div class="movie-meta">
+                    <span id="detail-rating"></span>
+                    <span id="detail-year"></span>
+                    <span id="detail-genre"></span>
+                    <span id="detail-runtime"></span>
+                </div>
+                <p id="detail-overview" class="movie-overview"></p>
+                
+                <div class="action-buttons">
+                    <button id="add-to-list" class="btn btn-primary">
+                        <i class="fas fa-plus"></i> Add to My List
+                    </button>
+                    <button class="btn btn-secondary">
+                        <i class="fas fa-play"></i> Play Trailer
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="streaming-options">
+            <h2 class="streaming-title">Where to Watch</h2>
+            <div class="platforms" id="streaming-platforms">
+                <!-- Streaming platforms will be added here by JavaScript -->
+            </div>
+        </div>
+        
+        <div class="trailer-container">
+            <h2 class="trailer-title">Trailer</h2>
+            <div class="trailer-iframe-container">
+                <iframe id="movie-trailer" class="trailer-iframe" src="" 
+                    frameborder="0" allowfullscreen></iframe>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        &copy; 2025 Movie Recommendation System
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Get the selected movie from localStorage
+            const movie = JSON.parse(localStorage.getItem('selectedMovie'));
+            
+            if (!movie) {
+                window.location.href = 'index.html';
+                return;
+            }
+            
+            // Populate movie details
+            document.getElementById('detail-poster').src = movie.imageUrl;
+            document.getElementById('detail-title').textContent = movie.title;
+            document.getElementById('detail-rating').textContent = `⭐ ${movie.rating}/10`;
+            document.getElementById('detail-year').textContent = new Date(movie.releaseDate).getFullYear();
+            document.getElementById('detail-genre').textContent = movie.genre.split(',')[0]; // Show first genre
+            document.getElementById('detail-overview').textContent = movie.overview;
+            
+            // Set trailer
+            if (movie.trailer) {
+                document.getElementById('movie-trailer').src = movie.trailer;
+            }
+            
+            // Add streaming platforms
+            const platformsContainer = document.getElementById('streaming-platforms');
+            movie.streaming.forEach(platform => {
+                const platformElement = document.createElement('div');
+                platformElement.classList.add('platform');
+                platformElement.innerHTML = `
+                    <i class="fab fa-${platform.platform.toLowerCase().replace(' ', '-')}"></i>
+                    <span>${platform.platform}</span>
+                    ${platform.subscription ? '<span class="subscription-badge">Subscription</span>' : ''}
+                `;
+                platformsContainer.appendChild(platformElement);
+            });
+            
+            // Add to list functionality
+            const addToListBtn = document.getElementById('add-to-list');
+            addToListBtn.addEventListener('click', () => {
+                let myList = JSON.parse(localStorage.getItem('myList')) || [];
+                
+                // Check if movie is already in the list
+                const isInList = myList.some(item => item.id === movie.id);
+                
+                if (!isInList) {
+                    myList.push(movie);
+                    localStorage.setItem('myList', JSON.stringify(myList));
+                    addToListBtn.innerHTML = '<i class="fas fa-check"></i> Added to My List';
+                    addToListBtn.style.backgroundColor = '#4CAF50';
+                } else {
+                    alert('This movie is already in your list!');
+                }
+            });
+            
+            // Check if movie is already in the list
+            const myList = JSON.parse(localStorage.getItem('myList')) || [];
+            if (myList.some(item => item.id === movie.id)) {
+                addToListBtn.innerHTML = '<i class="fas fa-check"></i> Added to My List';
+                addToListBtn.style.backgroundColor = '#4CAF50';
+            }
+        });
+    </script>
+</body>
+</html>

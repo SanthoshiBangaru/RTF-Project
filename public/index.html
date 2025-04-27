@@ -1,0 +1,49 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Movie Explorer - Home</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+  <div class="container header-container">
+    <a href="index.html" class="logo">Movie Explorer</a>
+    <nav class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="movies.html">Movies</a>
+      <a href="mylist.html">Wishlist</a>
+      <a href="Login.html">Login</a>
+      <a href="signup.html">Sign Up</a>
+      <a href="#" id="logout-link">Logout</a>
+    </nav>
+    <button id="theme-toggle">🌓</button>
+  </div>
+</header>
+
+<main class="container main-content">
+  <section class="genres">
+    <button class="genre-btn" data-genre="all">All</button>
+    <button class="genre-btn" data-genre="action">Action</button>
+    <button class="genre-btn" data-genre="comedy">Comedy</button>
+    <button class="genre-btn" data-genre="drama">Drama</button>
+    <button class="genre-btn" data-genre="sci-fi">Sci-Fi</button>
+    <button class="genre-btn" data-genre="thriller">Thriller</button>
+  </section>
+
+  <section class="movie-section" id="movies-container">
+    <!-- Movies will load here -->
+  </section>
+</main>
+
+<footer>
+  <div class="container">
+    <p>&copy; 2025 Movie Explorer</p>
+  </div>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>

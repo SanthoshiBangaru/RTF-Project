@@ -1,0 +1,17 @@
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: Arial, sans-serif; background: #111; color: #eee; }
+body.light { background: #f4f4f4; color: #111; }
+.container { width: 90%; margin: auto; padding: 10px; }
+header { background: #000; padding: 10px 0; }
+.nav-links a { margin: 0 10px; color: white; text-decoration: none; }
+.nav-links a:hover { color: #e50914; }
+.genre-btn { margin: 5px; padding: 5px 10px; cursor: pointer; border-radius: 20px; background: #444; color: white; border: none; }
+.genre-btn:hover, .genre-btn.active { background: #e50914; }
+.movie-card { background: #222; padding: 10px; margin: 10px; border-radius: 10px; width: 200px; display: inline-block; vertical-align: top; }
+.movie-card img { width: 100%; border-radius: 10px; }
+.movie-card .title { margin-top: 10px; font-weight: bold; }
+.movie-card .rating, .movie-card .subscription { font-size: 0.9em; margin-top: 5px; }
+.movie-card .buttons button { margin-top: 5px; margin-right: 5px; padding: 5px 10px; border: none; border-radius: 5px; background: #e50914; color: white; cursor: pointer; }
+.movie-card .buttons button:hover { background: #ff3333; }
+footer { text-align: center; padding: 10px; background: #000; margin-top: 20px; }

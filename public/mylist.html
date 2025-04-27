@@ -1,0 +1,44 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Watchlist</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<main class="container">
+  <h1>Your Watchlist</h1>
+  <div id="wishlist-container"></div>
+</main>
+
+<script src="script.js"></script>
+</body>
+</html>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const loggedInUser = localStorage.getItem('loggedInUser');
+  if (!loggedInUser) {
+    alert('Please login first!');
+    window.location.href = 'Login.html';
+    return;
+  }
+
+  const wishlistKey = 'wishlist_' + loggedInUser;
+  const wishlist = JSON.parse(localStorage.getItem(wishlistKey)) || [];
+  const container = document.getElementById('wishlist-container');
+
+  if (wishlist.length === 0) {
+    container.innerHTML = '<p>No movies in wishlist.</p>';
+  } else {
+    wishlist.forEach(movie => {
+      const div = document.createElement('div');
+      div.className = 'movie-card';
+      div.innerHTML = '<p>' + movie + '</p>';
+      container.appendChild(div);
+    });
+  }
+});
+</script>
