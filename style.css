@@ -1,5 +1,79 @@
 /* style.css - Enhanced Movie Recommender Styles */
-:root {
+body {
+  font-family: 'Roboto', sans-serif;
+  background-color: #f5f5f5;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+.auth-container {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  width: 400px;
+  max-width: 90%;
+  padding: 2rem;
+}
+.auth-tabs {
+  display: flex;
+  margin-bottom: 1.5rem;
+}
+.tab-button {
+  flex: 1;
+  padding: 0.75rem;
+  border: none;
+  background: #eee;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+.tab-button.active {
+  background: #4285f4;
+  color: white;
+}
+.auth-form {
+  display: none;
+}
+.auth-form.active {
+  display: block;
+}
+.input-group {
+  margin-bottom: 1rem;
+}
+label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: bold;
+}
+input {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+button[type="submit"] {
+  width: 100%;
+  padding: 0.75rem;
+  background: #4285f4;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+button[type="submit"]:hover {
+  background: #3367d6;
+}
+.error-message {
+  color: #d32f2f;
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
+}:root {
   --primary-color: #e50914;
   --primary-hover: #b8060b;
   --dark-bg: #000;

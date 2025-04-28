@@ -3,33 +3,239 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Your Recommendations - Movie Recommender</title>
+    <title>Movie Recommendations</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
+    <style>
+        .recommendation-form {
+            max-width: 800px;
+            margin: 30px auto;
+            padding: 20px;
+            background: #2a2a2a;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #444;
+            background: #333;
+            color: white;
+        }
+        
+        .genre-checkboxes {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .genre-checkbox {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .btn-submit {
+            background: #e50914;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-submit:hover {
+            background: #f40612;
+        }
+        
+        .recommendation-results {
+            margin-top: 40px;
+        }
+    </style>
 </head>
-<body class="recommendations-page">
+<body>
     <header>
-        <h1>Your Movie Recommendations</h1>
-        <button id="logout-btn">Logout</button>
+        <a href="index.html" class="logo">🎬MovieReco🍿</a>
+        <nav class="nav-links">
+            <a href="index.html"><i class="fas fa-home"></i>Home</a>
+            <a href="movies.html"><i class="fas fa-film"></i>Movies</a>
+            <a href="mylist.html"><i class="fas fa-heart"></i>Wishlist</a>
+            <a href="Login.html"><i class="fas fa-sign-in-alt"></i>Login</a>
+        </nav>
+        <div class="header-right">
+            <button id="theme-toggle"><i class="fas fa-moon"></i> Dark Mode</button>
+            <div class="profile-container">
+                <button id="profile-button"><i class="fas fa-user-circle"></i> Profile</button>
+                <div class="profile-menu" id="profile-menu">
+                    <button id="recommendations-btn"><i class="fas fa-star"></i> Get Recommendations</button>
+                    <button id="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</button>
+                </div>
+            </div>
+        </div>
     </header>
     
-    <div class="container">
-        <section class="preferences-section">
-            <h2>Your Preferences</h2>
-            <div id="user-preferences">
-                <!-- Preferences will be loaded here -->
-            </div>
-            <button id="update-prefs-btn">Update Preferences</button>
-        </section>
+    <main class="main-content">
+        <h1 class="page-title">Get Personalized Recommendations</h1>
         
-        <section class="recommendations-section">
-            <h2>Recommended For You</h2>
-            <div id="recommendations-list">
-                <!-- Recommendations will be loaded here -->
-            </div>
-        </section>
-    </div>
+        <div class="recommendation-form">
+            <form id="recommendation-form">
+                <div class="form-group">
+                    <label for="favorite-movies">Your Favorite Movies (comma separated)</label>
+                    <input type="text" id="favorite-movies" class="form-control" placeholder="e.g., The Shawshank Redemption, Inception, Parasite">
+                </div>
+                
+                <div class="form-group">
+                    <label>Preferred Genres</label>
+                    <div class="genre-checkboxes">
+                        <label class="genre-checkbox"><input type="checkbox" name="genre" value="action"> Action</label>
+                        <label class="genre-checkbox"><input type="checkbox" name="genre" value="comedy"> Comedy</label>
+                        <label class="genre-checkbox"><input type="checkbox" name="genre" value="drama"> Drama</label>
+                        <label class="genre-checkbox"><input type="checkbox" name="genre" value="sci-fi"> Sci-Fi</label>
+                        <label class="genre-checkbox"><input type="checkbox" name="genre" value="thriller"> Thriller</label>
+                        <label class="genre-checkbox"><input type="checkbox" name="genre" value="horror"> Horror</label>
+                        <label class="genre-checkbox"><input type="checkbox" name="genre" value="romance"> Romance</label>
+                        <label class="genre-checkbox"><input type="checkbox" name="genre" value="adventure"> Adventure</label>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="min-rating">Minimum Rating</label>
+                    <select id="min-rating" class="form-control">
+                        <option value="7">7+</option>
+                        <option value="8" selected>8+</option>
+                        <option value="9">9+</option>
+                    </select>
+                </div>
+                
+                <button type="submit" class="btn-submit">Get Recommendations</button>
+            </form>
+        </div>
+        
+        <div class="recommendation-results" id="recommendation-results">
+            <!-- Results will be displayed here -->
+        </div>
+    </main>
     
-    <script src="recommendations.js"></script>
+    <footer>
+        &copy; 2025 Movie Recommendation System
+    </footer>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const form = document.getElementById('recommendation-form');
+            const resultsContainer = document.getElementById('recommendation-results');
+            
+            form.addEventListener('submit', (e) => {
+                e.preventDefault();
+                
+                // Get form values
+                const favoriteMovies = document.getElementById('favorite-movies').value;
+                const minRating = document.getElementById('min-rating').value;
+                const selectedGenres = Array.from(document.querySelectorAll('input[name="genre"]:checked')).map(el => el.value);
+                
+                // In a real app, you would send this data to a server for processing
+                // For this demo, we'll simulate recommendations
+                const recommendations = getRecommendations(favoriteMovies, selectedGenres, minRating);
+                
+                // Display results
+                displayRecommendations(recommendations);
+            });
+            
+            function getRecommendations(favorites, genres, minRating) {
+                // This is a mock function - in a real app, you'd call an API
+                const allMovies = []; // Your movie data array from index.html
+                
+                // Filter movies based on criteria
+                let filtered = allMovies.filter(movie => {
+                    // Check rating
+                    if (parseFloat(movie.rating) < parseFloat(minRating)) return false;
+                    
+                    // Check genres if any selected
+                    if (genres.length > 0) {
+                        const movieGenres = movie.genre.toLowerCase().split(/,\s*/);
+                        return genres.some(genre => movieGenres.includes(genre));
+                    }
+                    
+                    return true;
+                });
+                
+                // Sort by rating (descending)
+                filtered.sort((a, b) => parseFloat(b.rating) - parseFloat(a.rating));
+                
+                // Return top 10
+                return filtered.slice(0, 10);
+            }
+            
+            function displayRecommendations(movies) {
+                if (movies.length === 0) {
+                    resultsContainer.innerHTML = `
+                        <div class="no-results">
+                            <i class="fas fa-film"></i>
+                            <h3>No recommendations found</h3>
+                            <p>Try adjusting your preferences or adding more favorite movies.</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                let html = `
+                    <h2 class="section-title"><i class="fas fa-star"></i> Recommended For You</h2>
+                    <div class="movie-list" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px;">
+                `;
+                
+                movies.forEach(movie => {
+                    html += `
+                        <div class="movie-item" style="cursor: pointer;">
+                            <img src="${movie.imageUrl}" alt="${movie.title}" style="width: 100%; border-radius: 5px;">
+                            <div style="margin-top: 10px;">
+                                <h3 style="margin: 0; font-size: 1rem;">${movie.title}</h3>
+                                <p style="margin: 5px 0; color: #e50914; font-weight: 500;">⭐ ${movie.rating}</p>
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                html += `</div>`;
+                resultsContainer.innerHTML = html;
+                
+                // Add click handlers to movie items
+                document.querySelectorAll('.movie-item').forEach((item, index) => {
+                    item.addEventListener('click', () => {
+                        localStorage.setItem('selectedMovie', JSON.stringify(movies[index]));
+                        window.location.href = 'movie-details.html';
+                    });
+                });
+            }
+            
+            // Profile menu toggle (same as in index.html)
+            const profileButton = document.getElementById('profile-button');
+            const profileMenu = document.getElementById('profile-menu');
+            
+            profileButton.addEventListener('click', (e) => {
+                e.stopPropagation();
+                profileMenu.classList.toggle('show');
+            });
+            
+            document.addEventListener('click', () => {
+                profileMenu.classList.remove('show');
+            });
+        });
+    </script>
 </body>
 </html>

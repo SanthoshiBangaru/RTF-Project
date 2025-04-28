@@ -7,6 +7,61 @@
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
+    <style>
+            .logout-btn {
+            background: #333;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            font-size: 0.95rem;
+            margin-left: 10px;
+            }
+
+            .logout-btn:hover {
+            background: #555;
+            }
+
+            .profile-menu {
+            display: none;
+            position: absolute;
+            right: 20px;
+            top: 60px;
+            background: #222;
+            border-radius: 5px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            z-index: 100;
+            min-width: 150px;
+            }
+
+            .profile-menu.show {
+            display: block;
+            }
+
+            .profile-menu button {
+            width: 100%;
+            text-align: left;
+            padding: 10px 15px;
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            }
+
+            .profile-menu button:hover {
+            background: #333;
+            }
+
+            .profile-container {
+            position: relative;
+            }
+    </style>
 </head>
 <body>
     <header>
@@ -19,7 +74,13 @@
         </nav>
         <div class="header-right">
             <button id="theme-toggle"><i class="fas fa-moon"></i> Dark Mode</button>
-            <button id="profile-button"><i class="fas fa-user-circle"></i> Profile</button>
+            <div class="profile-container">
+                <button id="profile-button"><i class="fas fa-user-circle"></i> Profile</button>
+                <div class="profile-menu" id="profile-menu">
+                    <button id="recommendations-btn"><i class="fas fa-star"></i> Get Recommendations</button>
+                    <button id="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</button>
+                </div>
+            </div>
         </div>
     </header>
     <main class="main-content">
@@ -54,6 +115,45 @@
 
     <script src="script.js"></script>
     <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Existing movie data and functions remain unchanged
+            
+            // Profile menu toggle
+            const profileButton = document.getElementById('profile-button');
+            const profileMenu = document.getElementById('profile-menu');
+            
+            profileButton.addEventListener('click', (e) => {
+                e.stopPropagation();
+                profileMenu.classList.toggle('show');
+            });
+            
+            // Close profile menu when clicking elsewhere
+            document.addEventListener('click', () => {
+                profileMenu.classList.remove('show');
+            });
+            
+            // Logout functionality
+            const logoutBtn = document.getElementById('logout-btn');
+            logoutBtn.addEventListener('click', () => {
+                // Clear user session data
+                localStorage.removeItem('userLoggedIn');
+                localStorage.removeItem('username');
+                
+                // Redirect to login page
+                window.location.href = 'Login.html';
+            });
+            
+            // Check login status (you might want to implement this)
+            function checkLoginStatus() {
+                const isLoggedIn = localStorage.getItem('userLoggedIn');
+                if (!isLoggedIn && window.location.pathname !== '/Login.html') {
+                    window.location.href = 'Login.html';
+                }
+            }
+            
+            // Call this when needed
+            // checkLoginStatus();
+        });
         document.addEventListener('DOMContentLoaded', () => {
             const movies = [
                 {
@@ -540,8 +640,8 @@
                 });
             }
             function displayRecommendedMovies(recommendedMovies) {
-        const recommendedSection = document.querySelector('#recommended .movie-list');
-        recommendedSection.innerHTML = '';
+            const recommendedSection = document.querySelector('#recommended .movie-list');
+            recommendedSection.innerHTML = '';
         
         if (recommendedMovies.length === 0) {
             recommendedSection.innerHTML = '<p class="no-results">No recommendations found. Try different preferences.</p>';
